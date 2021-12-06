@@ -5,6 +5,7 @@
 :root {
   --color-foreground: hsl(252, 7%, 14%);
   --color-background: hsl(0, 0%, 93%);
+  --color-background-shadow: hsl(0, 0%, 50%, 0.2);
   --color-links: hsl(213, 100%, 52%);
   --color-links-hover: hsl(213, 100%, 43%);
   --color-border: hsl(181, 100%, 41%);
@@ -61,7 +62,7 @@ button {
   color: currentColor;
   background: inherit;
   border-radius: 0.7rem;
-  border-color: darkturquoise;
+  border-color: var(--color-border);
   letter-spacing: 0.03rem;
 }
 
@@ -72,6 +73,11 @@ hr {
   background-color: var(--color-border);
   margin-top: 2rem;
   margin-bottom: 2rem;
+}
+
+ul,
+ol {
+  list-style: none;
 }
 
 input:where([type="text"]),
@@ -86,6 +92,19 @@ input:where([type="search"]) {
   padding-left: 0.5em;
   background-color: hsl(0 0% 100% / 20%);
   color: var(--color-foreground);
+}
+
+pre {
+  background: var(--color-background-shadow);
+  margin-left: 1ch;
+
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+  padding: 2ch 3ch;
+  border-left: 0.5ch solid var(--color-border);
 }
 
 .sr-only {
@@ -130,6 +149,7 @@ input:where([type="search"]) {
   justify-content: space-between;
   align-items: center;
 }
+
 .remix-app__header-content div {
   display: flex;
   justify-content: center;
@@ -189,14 +209,23 @@ input:where([type="search"]) {
   padding: 1.5ch 2ch;
   border: solid 1px var(--color-border);
   border-radius: 0.5rem;
+  max-width: 400px;
+}
+
+.remix__page > aside > hr {
+  margin: 0 0.93ch;
 }
 
 .remix__page > aside > :first-child {
   margin-top: 0;
+  margin-bottom: 0.93ch;
 }
 
 .remix__page > aside > :last-child {
   margin-bottom: 0;
+}
+
+.remix__page__reminder {
 }
 
 .remix__form {
@@ -217,19 +246,8 @@ input:where([type="search"]) {
   :root {
     --color-foreground: hsl(0, 0%, 87%);
     --color-background: hsl(252, 7%, 14%);
+    --color-background-shadow: hsla(252, 7%, 24%, 0.3);
     --color-links: hsl(213, 100%, 73%);
     --color-links-hover: hsl(213, 100%, 80%);
-  }
-
-  body {
-    background: var(--color-background);
-    color: var(--color-foreground);
-  }
-}
-
-@media (prefers-color-scheme: light) {
-  body {
-    background: var(--color-background);
-    color: var(--color-foreground);
   }
 }
