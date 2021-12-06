@@ -1,30 +1,30 @@
-import { Link, redirect, useLoaderData } from "remix";
-import type { LoaderFunction } from "remix";
-import { getSession } from "~/sessions.server";
-import { SkinAside, SkinCore, SkinMain } from "~/components/skin";
+import {Link, redirect, useLoaderData} from 'remix'
+import type {LoaderFunction} from 'remix'
+import {getSession} from '~/sessions.server'
+import {SkinAside, SkinCore, SkinMain} from '~/components/skin'
 
-type Lists = Array<{ name: string; url: string; id: string }>;
+type Lists = Array<{name: string; url: string; id: string}>
 
-export const loader: LoaderFunction = async ({ request }) => {
-  const session = await getSession(request.headers.get("Cookie"));
+export const loader: LoaderFunction = async ({request}) => {
+  const session = await getSession(request.headers.get('Cookie'))
 
-  if (session.has("lists")) {
-    return redirect("/todo/new");
+  if (session.has('lists')) {
+    return redirect('/todo/new')
   }
 
-  const lists = session.get("lists");
+  const lists = session.get('lists')
 
   return [
     {
       id: 1,
-      name: "list",
-      url: "list",
+      name: 'list',
+      url: 'list',
     },
-  ];
-};
+  ]
+}
 
 export default function Todo() {
-  const lists = useLoaderData<Lists>();
+  const lists = useLoaderData<Lists>()
   return (
     <div>
       <nav>
@@ -32,7 +32,7 @@ export default function Todo() {
           <li>
             <Link to="new">Create New List</Link>
           </li>
-          {lists.map(({ name, url, id }) => (
+          {lists.map(({name, url, id}) => (
             <li key={id}>
               <Link to={url}>{name}</Link>
             </li>
@@ -48,5 +48,5 @@ export default function Todo() {
         </SkinAside>
       </SkinCore>
     </div>
-  );
+  )
 }

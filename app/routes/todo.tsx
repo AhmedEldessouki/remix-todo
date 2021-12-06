@@ -1,5 +1,5 @@
-import { Outlet } from "remix";
-import React from "react";
+import {Outlet} from 'remix'
+import React from 'react'
 
 export default function Todo() {
   return (
@@ -8,5 +8,5 @@ export default function Todo() {
       <p>ToDo: Write Something Or Not</p>
       <Outlet />
     </div>
-  );
+  )
 }
