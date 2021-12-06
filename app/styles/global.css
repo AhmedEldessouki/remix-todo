@@ -226,6 +226,12 @@ pre {
   margin-bottom: 0;
 }
 
+@media print, screen and (max-width: 1024px) {
+  .remix__page > aside {
+    max-width: unset !important;
+  }
+}
+
 .remix__page__reminder {
 }
 
