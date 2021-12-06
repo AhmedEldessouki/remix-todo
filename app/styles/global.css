@@ -3,11 +3,11 @@
  * quick baseline!
  */
 :root {
-  --color-foreground: hsl(0, 0%, 7%);
+  --color-foreground: #222126;
   --color-background: hsl(0, 0%, 100%);
   --color-links: hsl(213, 100%, 52%);
   --color-links-hover: hsl(213, 100%, 43%);
-  --color-border: hsl(0, 0%, 82%);
+  --color-border: rgba(0, 206, 209, 0.8);
   --font-body: -apple-system, "Segoe UI", Helvetica Neue, Helvetica, Roboto,
     Arial, sans-serif, system-ui, "Apple Color Emoji", "Segoe UI Emoji";
 }
@@ -52,6 +52,17 @@ a {
 a:hover {
   color: var(--color-links-hover);
   text-decoration: underline;
+}
+
+button {
+  font-weight: bold;
+  padding: 1rem 2.8rem;
+  font-size: 1rem;
+  color: currentColor;
+  background: inherit;
+  border-radius: 0.7rem;
+  border-color: darkturquoise;
+  letter-spacing: 0.03rem;
 }
 
 hr {
@@ -200,4 +211,18 @@ input:where([type="search"]) {
 .remix__form > * {
   margin-top: 0;
   margin-bottom: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #222126;
+    color: #ddd;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  body {
+    background: #eee;
+    color: #222126;
+  }
 }
