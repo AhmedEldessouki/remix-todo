@@ -219,6 +219,7 @@ pre {
 .remix__page > aside > :first-child {
   margin-top: 0;
   margin-bottom: 0.93ch;
+  text-align: center;
 }
 
 .remix__page > aside > :last-child {

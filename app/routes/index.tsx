@@ -80,14 +80,6 @@ export default function Index() {
             </li>
           ))}
         </ul>
-        <h2>Resources</h2>
-        <ul>
-          {data.resources.map((resource) => (
-            <li key={resource.url} className="remix__page__resource">
-              <a href={resource.url}>{resource.name}</a>
-            </li>
-          ))}
-        </ul>
       </aside>
     </div>
   );
