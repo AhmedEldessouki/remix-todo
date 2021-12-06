@@ -119,23 +119,10 @@ input:where([type="search"]) {
   justify-content: space-between;
   align-items: center;
 }
-
-.remix-app__header-home-link {
-  width: 106px;
-  height: 30px;
-  color: var(--color-foreground);
-}
-
-.remix-app__header-nav ul {
-  list-style: none;
-  margin: 0;
+.remix-app__header-content div {
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 1.5em;
-}
-
-.remix-app__header-nav li {
-  font-weight: bold;
 }
 
 .remix-app__main {
@@ -150,7 +137,7 @@ input:where([type="search"]) {
 
 .remix-app__footer-content {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
 }
 

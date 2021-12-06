@@ -6,7 +6,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useCatch
+  useCatch,
 } from "remix";
 import type { LinksFunction } from "remix";
 
@@ -20,8 +20,8 @@ export let links: LinksFunction = () => {
     {
       rel: "stylesheet",
       href: darkStylesUrl,
-      media: "(prefers-color-scheme: dark)"
-    }
+      media: "(prefers-color-scheme: dark)",
+    },
   ];
 };
 
@@ -95,7 +95,7 @@ export function CatchBoundary() {
 
 function Document({
   children,
-  title
+  title,
 }: {
   children: React.ReactNode;
   title?: string;
@@ -124,30 +124,31 @@ function Layout({ children }: { children: React.ReactNode }) {
     <div className="remix-app">
       <header className="remix-app__header">
         <div className="container remix-app__header-content">
-          <Link to="/" title="Remix" className="remix-app__header-home-link">
-            <RemixLogo />
-          </Link>
-          <nav aria-label="Main navigation" className="remix-app__header-nav">
-            <ul>
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-              <li>
-                <a href="https://remix.run/docs">Remix Docs</a>
-              </li>
-              <li>
-                <a href="https://github.com/remix-run/remix">GitHub</a>
-              </li>
-            </ul>
-          </nav>
+          <div>
+            <h1>T</h1>
+            <h1>O</h1>
+            <h1>D</h1>
+            <h1>O</h1>
+          </div>
+          <div>
+            <button
+              type="button"
+              onClick={() => {
+                // ! TODO: Add a new ListName to Cookie
+              }}
+            >
+              Create List
+            </button>
+          </div>
         </div>
       </header>
       <div className="remix-app__main">
         <div className="container remix-app__main-content">{children}</div>
       </div>
       <footer className="remix-app__footer">
-        <div className="container remix-app__footer-content">
-          <p>&copy; You!</p>
+        <div className="container remix-app__header-content">
+          <p>Write Something Here!</p>
+          <p>&copy; Ahmed ElDessouki!</p>
         </div>
       </footer>
     </div>
