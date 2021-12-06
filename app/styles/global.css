@@ -3,11 +3,11 @@
  * quick baseline!
  */
 :root {
-  --color-foreground: #222126;
-  --color-background: hsl(0, 0%, 100%);
+  --color-foreground: hsl(252, 7%, 14%);
+  --color-background: hsl(0, 0%, 93%);
   --color-links: hsl(213, 100%, 52%);
   --color-links-hover: hsl(213, 100%, 43%);
-  --color-border: rgba(0, 206, 209, 0.8);
+  --color-border: hsl(181, 100%, 41%);
   --font-body: -apple-system, "Segoe UI", Helvetica Neue, Helvetica, Roboto,
     Arial, sans-serif, system-ui, "Apple Color Emoji", "Segoe UI Emoji";
 }
@@ -214,15 +214,22 @@ input:where([type="search"]) {
 }
 
 @media (prefers-color-scheme: dark) {
+  :root {
+    --color-foreground: hsl(0, 0%, 87%);
+    --color-background: hsl(252, 7%, 14%);
+    --color-links: hsl(213, 100%, 73%);
+    --color-links-hover: hsl(213, 100%, 80%);
+  }
+
   body {
-    background: #222126;
-    color: #ddd;
+    background: var(--color-background);
+    color: var(--color-foreground);
   }
 }
 
 @media (prefers-color-scheme: light) {
   body {
-    background: #eee;
-    color: #222126;
+    background: var(--color-background);
+    color: var(--color-foreground);
   }
 }
