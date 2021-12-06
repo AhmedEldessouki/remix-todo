@@ -1,5 +1,6 @@
 import type { MetaFunction, LoaderFunction } from "remix";
 import { useLoaderData, json, Link } from "remix";
+import { SkinAside, SkinCore, SkinMain } from "~/components/skin";
 
 type IndexData = {
   resources: Array<{ name: string; url: string }>;
@@ -52,8 +53,8 @@ export default function Index() {
   let data = useLoaderData<IndexData>();
 
   return (
-    <div className="remix__page">
-      <main>
+    <SkinCore>
+      <SkinMain>
         <h2>Welcome to ToDo!</h2>
         <p>ToDo is here to help you organize.</p>
         <pre>
@@ -66,11 +67,9 @@ export default function Index() {
           and press all the <i>Buttons</i> until you know what do what Or break
           it. When it breaks press <strong>F5</strong>.
         </p>
-      </main>
+      </SkinMain>
       {/* // ! Todo: In aside Add Reminders [appears]: Only If the User Set a Reminder */}
-      <aside>
-        <h2>Reminders</h2>
-        <hr />
+      <SkinAside>
         <ul>
           {data.demos.map((demo) => (
             <li key={demo.to} className="remix__page__reminder">
@@ -80,7 +79,7 @@ export default function Index() {
             </li>
           ))}
         </ul>
-      </aside>
-    </div>
+      </SkinAside>
+    </SkinCore>
   );
 }
