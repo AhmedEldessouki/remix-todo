@@ -229,7 +229,7 @@ pre {
 @media print, screen and (max-width: 1024px) {
   .remix__page > aside {
     margin-top: var(--gap);
-    max-width: unset !important;
+    max-width: unset;
   }
 }
 
