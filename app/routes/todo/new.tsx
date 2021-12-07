@@ -1,9 +1,20 @@
 import React from 'react'
 import {Form, useFetcher} from 'remix'
 import type {ActionFunction} from 'remix'
-import {loader} from '..'
+import {getSession} from '~/sessions.server'
+import {List} from '~/types'
 
-export const action: ActionFunction = ({request}) => {}
+export const action: ActionFunction = async ({request, params}) => {
+  const session = await getSession(request.headers.get('Cookie'))
+  const formData = await request.formData()
+
+  const listName = params['name']
+  if (!listName) {
+    throw new Error('SomeThing went wrong. Please Refresh The Page!')
+  }
+  const listData: List = session.get(listName)
+  session
+}
 
 export default function New() {
   const fetcher = useFetcher()
@@ -18,7 +29,7 @@ export default function New() {
   }, [])
 
   return (
-    <Form>
+    <Form method="post">
       {JSON.stringify(fetcher, null, 2)}
       <h1>This is a form</h1>
     </Form>

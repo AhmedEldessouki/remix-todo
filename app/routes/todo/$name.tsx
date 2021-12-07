@@ -2,27 +2,23 @@ import {useLoaderData} from 'remix'
 import type {LoaderFunction} from 'remix'
 import {getSession} from '~/sessions.server'
 import {SkinAside, SkinCore, SkinMain} from '~/components/skin'
-
-type ListData = {
-  data: Array<{name: string; isDone: boolean; id: string}>
-  reminders: Array<{id: string; todoId: string; start: Date; end: Date}>
-}
+import type {List} from '~/types'
 
 export const loader: LoaderFunction = async ({
   request,
   params,
-}): Promise<ListData> => {
+}): Promise<List> => {
   const session = await getSession(request.headers.get('Cookie'))
-  const param = params['id']
-  if (!param) {
-    throw new Error(`Id Not Found`)
+  const listName = params['name']
+  if (!listName) {
+    throw new Error(`List Name Is inValid`)
   }
 
-  if (session.has(param)) {
+  if (session.has(listName)) {
     throw new Error('List Not Found')
   }
 
-  const listData: ListData = session.get(param)
+  const listData: List = session.get(listName)
 
   return {
     data: [
@@ -44,7 +40,7 @@ export const loader: LoaderFunction = async ({
 }
 
 export default function Todo() {
-  const listData = useLoaderData<ListData>()
+  const listData = useLoaderData<List>()
   return (
     <div>
       {/* // ! Todo use useFetcher 
