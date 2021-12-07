@@ -10,24 +10,14 @@ export const loader: LoaderFunction = async ({request}) => {
     return redirect('/todo/new')
   }
 
-  const lists = session.get('lists')
-
-  return [
-    {
-      id: 1,
-      name: 'list',
-      url: 'list',
-    },
-  ]
+  return 'Welcome To The ToDo Tab Now You Can Start Whatever You Wanna Do With It.'
 }
 
 export default function Todo() {
-  const lists = useLoaderData<Lists>()
+  const message = useLoaderData<string>()
   return (
     <div>
-      <p>
-        Welcome To The ToDo Tab Now You Can Start Whatever You Wanna Do With It.
-      </p>
+      <p>{message}</p>
     </div>
   )
 }

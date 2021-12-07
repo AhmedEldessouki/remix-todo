@@ -35,6 +35,7 @@ export default function Todo() {
           ))}
         </ul>
       </nav>
+      <hr />
       {/* // ToDo: Write Something Or Not */}
       <p>ToDo: Write Something Or Not</p>
       <Outlet />
