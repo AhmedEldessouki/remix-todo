@@ -18,7 +18,7 @@ export const loader: LoaderFunction = async ({
     throw new Error('List Not Found')
   }
 
-  const availableLists: List = session.get(listName)
+  const listData: List = session.get(listName)
 
   return {
     data: [
@@ -40,7 +40,7 @@ export const loader: LoaderFunction = async ({
 }
 
 export default function Todo() {
-  const availableLists = useLoaderData<List>()
+  const listData = useLoaderData<List>()
   return (
     <div>
       {/* // ! Todo use useFetcher 
@@ -50,11 +50,11 @@ export default function Todo() {
       <SkinCore>
         <SkinMain>
           <h2>ToDO</h2>
-          {availableLists.data.map(data => JSON.stringify(data, null, 2))}
+          {listData.data.map(data => JSON.stringify(data, null, 2))}
         </SkinMain>
         <SkinAside>
           <h2>Reminders</h2>
-          {availableLists.reminders.map(reminder =>
+          {listData.reminders.map(reminder =>
             JSON.stringify(reminder, null, 2),
           )}
         </SkinAside>
