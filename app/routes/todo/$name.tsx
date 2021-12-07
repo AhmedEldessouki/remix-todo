@@ -1,8 +1,22 @@
 import {useLoaderData} from 'remix'
-import type {LoaderFunction} from 'remix'
 import {getSession} from '~/sessions.server'
 import {SkinAside, SkinCore, SkinMain} from '~/components/skin'
+import type {LoaderFunction, MetaFunction} from 'remix'
 import type {List} from '~/types'
+
+export const meta: MetaFunction = ({params}) => {
+  const listName = params['name']
+  if (!listName)
+    return {
+      title: 'Invalid ListName!',
+      description: 'Something went wrong. Please check list name.',
+    }
+
+  return {
+    title: listName,
+    description: 'Congrats for sharing your list with people! 🥳',
+  }
+}
 
 export const loader: LoaderFunction = async ({
   request,

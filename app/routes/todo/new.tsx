@@ -1,19 +1,39 @@
 import React from 'react'
-import {Form, useFetcher} from 'remix'
-import type {ActionFunction} from 'remix'
+import {Form, json, useFetcher, redirect} from 'remix'
 import {getSession} from '~/sessions.server'
-import {List} from '~/types'
+import type {ActionFunction, MetaFunction} from 'remix'
+import type {List, ObjectOfStrings} from '~/types'
+
+export const meta: MetaFunction = () => {
+  return {
+    title: 'Create List',
+    description: 'Create a new list!',
+  }
+}
 
 export const action: ActionFunction = async ({request, params}) => {
   const session = await getSession(request.headers.get('Cookie'))
   const formData = await request.formData()
+  const errors: ObjectOfStrings = {}
+  const listName = formData.get('name')?.toString()
 
-  const listName = params['name']
-  if (!listName) {
-    throw new Error('SomeThing went wrong. Please Refresh The Page!')
+  if (formData.values.length <= 0) {
+    return json({message: 'Request Timeout!'}, {status: 408})
   }
-  const listData: List = session.get(listName)
-  session
+
+  if (!listName) {
+    errors['listName'] = 'List name is invalid.'
+  } else if (session.has(listName)) {
+    errors['listName'] = 'Already exists!'
+    return json(errors, {status: 409})
+  }
+
+  if (Object.keys(errors).length) {
+    // ? 422: Unprocessable Entity
+    return json(errors, {status: 422})
+  }
+
+  return redirect(`/todo/${listName}`)
 }
 
 export default function New() {

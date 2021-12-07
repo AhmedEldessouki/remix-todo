@@ -9,4 +9,6 @@ type List = {
   reminders: Array<ListReminders>
 }
 
-export {Lists, List, ListData, ListReminders}
+type ObjectOfStrings = {[key: string]: string}
+
+export {Lists, List, ListData, ListReminders, ObjectOfStrings}
