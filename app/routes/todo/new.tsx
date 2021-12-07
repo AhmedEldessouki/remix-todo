@@ -1,8 +1,11 @@
 import React from 'react'
 import {Form, json, useFetcher, redirect} from 'remix'
-import {getSession} from '~/sessions.server'
+import {commitSession, getSession} from '~/sessions.server'
 import type {ActionFunction, MetaFunction} from 'remix'
-import type {List, ObjectOfStrings} from '~/types'
+import type {List, Lists, ObjectOfStrings} from '~/types'
+import Input from '~/components/input'
+import {v4} from 'uuid'
+import {hasListName} from '~/utils'
 
 export const meta: MetaFunction = () => {
   return {
@@ -11,19 +14,22 @@ export const meta: MetaFunction = () => {
   }
 }
 
-export const action: ActionFunction = async ({request, params}) => {
+export const action: ActionFunction = async ({request}) => {
   const session = await getSession(request.headers.get('Cookie'))
   const formData = await request.formData()
-  const errors: ObjectOfStrings = {}
-  const listName = formData.get('name')?.toString()
+  let lists: Lists = session.get('lists')
 
-  if (formData.values.length <= 0) {
-    return json({message: 'Request Timeout!'}, {status: 408})
-  }
+  const errors: ObjectOfStrings = {}
+  console.log(formData)
+
+  const listName = formData.get('name')?.toString().trim()
 
   if (!listName) {
     errors['listName'] = 'List name is invalid.'
-  } else if (session.has(listName)) {
+    return json(errors, {status: 422})
+  }
+
+  if (hasListName(lists, listName)) {
     errors['listName'] = 'Already exists!'
     return json(errors, {status: 409})
   }
@@ -33,7 +39,21 @@ export const action: ActionFunction = async ({request, params}) => {
     return json(errors, {status: 422})
   }
 
-  return redirect(`/todo/${listName}`)
+  const newList = {name: listName, id: v4(), url: encodeURIComponent(listName)}
+
+  if (!Array.isArray(lists)) {
+    lists = [newList]
+  } else {
+    lists = [...lists, newList]
+  }
+  session.set('lists', lists)
+  session.set(listName, {data: [], reminders: []})
+
+  return redirect(`/todo/${newList.url}`, {
+    headers: {
+      'Set-Cookie': await commitSession(session),
+    },
+  })
 }
 
 export default function New() {
@@ -49,9 +69,12 @@ export default function New() {
   }, [])
 
   return (
-    <Form method="post">
-      {JSON.stringify(fetcher, null, 2)}
-      <h1>This is a form</h1>
-    </Form>
+    <section>
+      <h2>Create List</h2>
+      <Form method="post" reloadDocument>
+        <Input label="Name" name="name" id="create-list-name" type="text" />
+        <button type="submit">Submit</button>
+      </Form>
+    </section>
   )
 }

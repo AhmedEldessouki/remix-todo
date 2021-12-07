@@ -1,4 +1,5 @@
 import {
+  Link,
   Links,
   LiveReload,
   Meta,
@@ -110,12 +111,9 @@ function Layout({children}: {children: React.ReactNode}) {
     <div className="remix-app">
       <header className="remix-app__header">
         <div className="container remix-app__header-content">
-          <div>
-            <h1>T</h1>
-            <h1>O</h1>
-            <h1>D</h1>
-            <h1>O</h1>
-          </div>
+          <Link to="/todo">
+            <h1>TODO</h1>
+          </Link>
           <div>
             <button
               type="button"

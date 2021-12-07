@@ -1,4 +1,4 @@
-import {Outlet, Link, useLoaderData} from 'remix'
+import {Outlet, json, Link, useLoaderData} from 'remix'
 import type {LoaderFunction} from 'remix'
 import React from 'react'
 import {getSession} from '~/sessions.server'
@@ -9,13 +9,7 @@ export const loader: LoaderFunction = async ({request}) => {
 
   const lists = session.get('lists')
 
-  return [
-    {
-      id: 1,
-      name: 'list',
-      url: 'list',
-    },
-  ]
+  return lists ?? []
 }
 
 export default function Todo() {

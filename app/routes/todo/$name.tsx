@@ -1,4 +1,4 @@
-import {useLoaderData} from 'remix'
+import {useLoaderData, json} from 'remix'
 import {getSession} from '~/sessions.server'
 import {SkinAside, SkinCore, SkinMain} from '~/components/skin'
 import type {LoaderFunction, MetaFunction} from 'remix'
@@ -18,61 +18,58 @@ export const meta: MetaFunction = ({params}) => {
   }
 }
 
-export const loader: LoaderFunction = async ({
-  request,
-  params,
-}): Promise<List> => {
+export const loader: LoaderFunction = async ({request, params}) => {
   const session = await getSession(request.headers.get('Cookie'))
-  const listName = params['name']
-  if (!listName) {
-    throw new Error(`List Name Is inValid`)
-  }
+  const path = params['name']
 
-  if (session.has(listName)) {
-    throw new Error('List Not Found')
-  }
-
-  const listData: List = session.get(listName)
-
-  return {
-    data: [
+  if (!path) {
+    return json(
+      {message: 'List Name Is inValid'},
       {
-        id: '1',
-        name: 'list',
-        isDone: false,
+        status: 404,
       },
-    ],
-    reminders: [
-      {
-        todoId: '1',
-        id: '1',
-        start: new Date(),
-        end: new Date(),
-      },
-    ],
+    )
   }
+
+  const listName = decodeURIComponent(path)
+
+  const listData = session.get(listName)
+
+  if (!listData) {
+    return json(
+      {message: 'List Not Found'},
+      {
+        status: 404,
+      },
+    )
+  }
+  return json({message: '', listData})
 }
 
 export default function Todo() {
-  const listData = useLoaderData<List>()
+  const {listData, message} = useLoaderData<{message: string; listData: List}>()
   return (
     <div>
       {/* // ! Todo use useFetcher 
           // ! to display the nav data here 
           // ! instead of refetching them  
       */}
-      <SkinCore>
-        <SkinMain>
-          <h2>ToDO</h2>
-          {listData.data.map(data => JSON.stringify(data, null, 2))}
-        </SkinMain>
-        <SkinAside>
-          <h2>Reminders</h2>
-          {listData.reminders.map(reminder =>
-            JSON.stringify(reminder, null, 2),
-          )}
-        </SkinAside>
-      </SkinCore>
+      {message ? (
+        <span>{message}</span>
+      ) : (
+        <SkinCore>
+          <SkinMain>
+            <h2>ToDO</h2>
+            {listData.data.map(data => JSON.stringify(data, null, 2))}
+          </SkinMain>
+          <SkinAside>
+            <h2>Reminders</h2>
+            {listData.reminders.map(reminder =>
+              JSON.stringify(reminder, null, 2),
+            )}
+          </SkinAside>
+        </SkinCore>
+      )}
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import {redirect, useLoaderData} from 'remix'
+import {redirect, json, useLoaderData} from 'remix'
 import {getSession} from '~/sessions.server'
 import type {LoaderFunction, MetaFunction} from 'remix'
 import type {Lists} from '~/types'
@@ -19,14 +19,15 @@ export const loader: LoaderFunction = async ({request}) => {
     return redirect('/todo/new')
   }
 
-  return (
-    'Welcome To The ToDo Tab Now ' +
-    'You Can Start Whatever You Wanna Do With It.'
-  )
+  return json({
+    message:
+      'Welcome To The ToDo Tab Now ' +
+      'You Can Start Whatever You Wanna Do With It.',
+  })
 }
 
 export default function Todo() {
-  const message = useLoaderData<string>()
+  const {message} = useLoaderData()
   return (
     <div>
       <p>{message}</p>

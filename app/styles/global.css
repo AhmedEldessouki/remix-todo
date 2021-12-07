@@ -64,6 +64,7 @@ button {
   border-radius: 0.7rem;
   border-color: var(--color-border);
   letter-spacing: 0.03rem;
+  margin:  0.8em 0;
 }
 
 hr {
@@ -90,6 +91,7 @@ input:where([type="search"]) {
   height: calc(1ch + 1.5em);
   padding-right: 0.5em;
   padding-left: 0.5em;
+  margin: 0.5em 0;
   background-color: hsl(0 0% 100% / 20%);
   color: var(--color-foreground);
 }
