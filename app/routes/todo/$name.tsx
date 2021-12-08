@@ -1,8 +1,19 @@
-import {useLoaderData, json} from 'remix'
+import {LinksFunction, useLoaderData, json} from 'remix'
 import {getSession} from '~/sessions.server'
 import {SkinAside, SkinCore, SkinMain} from '~/components/skin'
 import type {LoaderFunction, MetaFunction} from 'remix'
 import type {List} from '~/types'
+import Task from '~/components/task'
+import {v4} from 'uuid'
+
+import taskStyles from '~/styles/tasks.css'
+
+export const links: LinksFunction = () => [
+  {
+    rel: 'stylesheet',
+    href: taskStyles,
+  },
+]
 
 export const meta: MetaFunction = ({params}) => {
   const listName = params['name']
@@ -43,7 +54,28 @@ export const loader: LoaderFunction = async ({request, params}) => {
       },
     )
   }
-  return json({message: '', listData})
+  return json({
+    message: '',
+    listData: {
+      tasks: [
+        {
+          id: v4(),
+          name: 'task',
+          isDone: false,
+          description:
+            'Something Something Something Something Something Something Something Something Something Something Something ',
+        },
+        {
+          id: v4(),
+          name: 'done task',
+          isDone: true,
+          description:
+            'Something Something Something Something Something Something Something Something Something Something Something ',
+        },
+      ],
+      reminders: [],
+    },
+  })
 }
 
 export default function Todo() {
@@ -60,7 +92,14 @@ export default function Todo() {
         <SkinCore>
           <SkinMain>
             <h2>ToDO</h2>
-            {listData.data.map(data => JSON.stringify(data, null, 2))}
+            {listData.tasks.map(({name, id, isDone, description}) => (
+              <Task
+                key={id}
+                name={name}
+                isDone={isDone}
+                description={description}
+              />
+            ))}
           </SkinMain>
           <SkinAside>
             <h2>Reminders</h2>

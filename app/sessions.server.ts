@@ -1,4 +1,4 @@
-import {createCookieSessionStorage} from '@remix-run/server-runtime'
+import {createCookieSessionStorage} from 'remix'
 
 const {commitSession, destroySession, getSession} = createCookieSessionStorage({
   cookie: {
