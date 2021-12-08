@@ -78,3 +78,14 @@ fieldset {
     animation: slide-down 0.3s ease;
   }
 }
+
+@media (prefers-color-scheme: no-preference) {
+  .task-root__container:where([data-state='true']) {
+    color: gray;
+  }
+}
+@media (prefers-color-scheme: light) {
+  .task-root__container:where([data-state='true']) {
+    color: gray;
+  }
+}
