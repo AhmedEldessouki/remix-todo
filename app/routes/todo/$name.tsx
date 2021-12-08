@@ -1,10 +1,12 @@
-import {LinksFunction, useLoaderData, json} from 'remix'
+import React from 'react'
+import {LinksFunction, useLoaderData, json, useFetcher} from 'remix'
 import {getSession} from '~/sessions.server'
 import {SkinAside, SkinCore, SkinMain} from '~/components/skin'
 import type {LoaderFunction, MetaFunction} from 'remix'
 import type {List} from '~/types'
 import Task from '~/components/task'
 import {v4} from 'uuid'
+import {MixedCheckbox} from '@reach/checkbox'
 
 import taskStyles from '~/styles/tasks.css'
 
@@ -80,6 +82,17 @@ export const loader: LoaderFunction = async ({request, params}) => {
 
 export default function Todo() {
   const {listData, message} = useLoaderData<{message: string; listData: List}>()
+  const fetcher = useFetcher()
+  const [isAllChecked, setIsAllChecked] = React.useState<boolean | 'mixed'>(
+    () => {
+      const checkedLength = listData.tasks.filter(({isDone}) => isDone).length
+
+      if (checkedLength === listData.tasks.length) return true
+      if (checkedLength === 0) return false
+      return 'mixed'
+    },
+  )
+
   return (
     <div>
       {/* // ! Todo use useFetcher 
@@ -92,14 +105,43 @@ export default function Todo() {
         <SkinCore>
           <SkinMain>
             <h2>ToDO</h2>
-            {listData.tasks.map(({name, id, isDone, description}) => (
-              <Task
-                key={id}
-                name={name}
-                isDone={isDone}
-                description={description}
-              />
-            ))}
+            <fieldset>
+              <label>
+                <MixedCheckbox
+                  value="tasks"
+                  name="tasks"
+                  checked={isAllChecked}
+                  onChange={() => {
+                    if (typeof isAllChecked === 'string') {
+                      fetcher.submit(
+                        {tasks: `true`},
+                        {action: '/actions/todo/check-all'},
+                      )
+                      setIsAllChecked((state: any) => true)
+                      return
+                    }
+                    fetcher.submit(
+                      {tasks: `${!isAllChecked}`},
+                      {action: '/actions/todo/check-all', method: 'put'},
+                    )
+                    setIsAllChecked((state: any) => !state)
+                  }}
+                />
+                {true ? 'Unselect' : 'Select'} all condiments
+              </label>
+              <fieldset style={{margin: '1rem 0 0', padding: '1rem 1.5rem'}}>
+                <legend>Tasks</legend>
+
+                {listData.tasks.map(({name, id, isDone, description}) => (
+                  <Task
+                    key={id}
+                    name={name}
+                    isDone={isDone}
+                    description={description}
+                  />
+                ))}
+              </fieldset>
+            </fieldset>
           </SkinMain>
           <SkinAside>
             <h2>Reminders</h2>
