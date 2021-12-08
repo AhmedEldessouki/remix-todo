@@ -10,8 +10,8 @@
   --color-links-hover: hsl(213, 100%, 43%);
   --color-border: hsl(181, 100%, 41%);
   --rounded: 0.7rem;
-  --font-body: -apple-system, "Segoe UI", Helvetica Neue, Helvetica, Roboto,
-    Arial, sans-serif, system-ui, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-body: -apple-system, 'Segoe UI', Helvetica Neue, Helvetica, Roboto,
+    Arial, sans-serif, system-ui, 'Apple Color Emoji', 'Segoe UI Emoji';
 }
 
 html {
@@ -65,7 +65,7 @@ button {
   border-radius: var(--rounded);
   border-color: var(--color-border);
   letter-spacing: 0.03rem;
-  margin:  0.8em 0;
+  margin: 0.8em 0;
 }
 
 hr {
@@ -83,8 +83,8 @@ li {
   list-style: none;
 }
 
-input:where([type="text"]),
-input:where([type="search"]) {
+input:where([type='text']),
+input:where([type='search']) {
   display: block;
   border: 1px solid var(--color-border);
   width: 100%;
@@ -256,10 +256,13 @@ pre {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-foreground: hsl(0, 0%, 87%);
+    --color-foreground: hsl(216, 4.1%, 75.9%);
     --color-background: hsl(252, 7%, 14%);
-    --color-background-shadow: hsla(252, 7%, 24%, 0.3);
+    --color-background-secondary: #282a37;
+    --color-background-shadow: #3437484f;
     --color-links: hsl(213, 100%, 73%);
     --color-links-hover: hsl(213, 100%, 80%);
+    --color-red: #bd0817;
+    --color-green: #1bff62;
   }
 }

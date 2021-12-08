@@ -1,15 +1,23 @@
+import {v4} from 'uuid'
 import {json, redirect} from 'remix'
 import {commitSession, getSession} from '~/sessions.server'
 import type {ActionFunction} from 'remix'
-import {List} from '~/types'
+import type {List, ListData} from '~/types'
 
 export const action: ActionFunction = async ({request, params}) => {
   const session = await getSession(request.headers.get('Cookie'))
   const formData = await request.formData()
-  const isChecked = formData.get('tasks')
 
-  const path = params['name']
-  if (!path) {
+  const newTask: ListData = {
+    name: formData.get('name')?.toString() ?? '',
+    id: v4(),
+    description: formData.get('description')?.toString() ?? '',
+    isDone: false,
+  }
+
+  const listName = new URL(request.url).searchParams.get('path')
+
+  if (!listName) {
     return json(
       {message: 'List Name Is inValid'},
       {
@@ -17,20 +25,14 @@ export const action: ActionFunction = async ({request, params}) => {
       },
     )
   }
-  const listName = decodeURIComponent(path)
 
   const listData: List = session.get(listName)
 
-  if (isChecked === null) return json({message: 'Form/Tasks was null'})
+  if (newTask.name === null) return json({message: 'Task must have a name.'})
 
-  const newListData = listData.tasks.map(task => {
-    task.isDone = Boolean(isChecked)
-    return task
-  })
+  session.set(listName, {...listData, tasks: [...listData.tasks, newTask]})
 
-  session.set(listName, newListData)
-
-  return redirect(`/todo/${path}`, {
+  return json(newTask, {
     headers: {
       'Set-Cookie': await commitSession(session),
     },

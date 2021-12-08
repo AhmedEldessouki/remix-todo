@@ -27,11 +27,13 @@ function TaskHeader({
   handleDisclosure,
   isOpen,
   isDone,
+  isDisabled,
 }: {
   children: React.ReactNode
   handleDisclosure: () => void
   isOpen: boolean
   isDone: boolean
+  isDisabled: boolean
 }) {
   return (
     <div className="task-header__container">
@@ -43,7 +45,7 @@ function TaskHeader({
           // onChange={handleChildChange}
         />
       </label>
-      <DisclosureButton onClick={handleDisclosure}>
+      <DisclosureButton disabled={isDisabled} onClick={handleDisclosure}>
         <span aria-hidden>{isOpen ? '🔽' : '🔼'}</span>
         <VisuallyHidden>description</VisuallyHidden>
       </DisclosureButton>
@@ -75,6 +77,7 @@ function Task({
       <TaskHeader
         isDone={isDone}
         isOpen={isOpen}
+        isDisabled={description.length === 0}
         handleDisclosure={() => setIsOpen(state => !state)}
       >
         {name}

@@ -46,8 +46,38 @@ export const action: ActionFunction = async ({request}) => {
   } else {
     lists = [...lists, newList]
   }
+
+  const someId = v4()
+
+  const defaultList: List = {
+    tasks: [
+      {
+        id: someId,
+        name: 'task',
+        isDone: false,
+        description:
+          'Something Something Something Something Something Something Something Something Something Something Something ',
+      },
+      {
+        id: v4(),
+        name: 'done task',
+        isDone: true,
+        description:
+          'Something Something Something Something Something Something Something Something Something Something Something ',
+      },
+    ],
+    reminders: [
+      {
+        todoId: someId,
+        id: v4(),
+        start: new Date(Date.now() + 300000),
+        end: new Date(Date.now() + 31000000),
+      },
+    ],
+  }
+
   session.set('lists', lists)
-  session.set(listName, {data: [], reminders: []})
+  session.set(listName, defaultList)
 
   return redirect(`/todo/${newList.url}`, {
     headers: {

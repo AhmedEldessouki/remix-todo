@@ -1,5 +1,11 @@
 import React from 'react'
-import {LinksFunction, useLoaderData, json, useFetcher} from 'remix'
+import {
+  LinksFunction,
+  useLoaderData,
+  json,
+  useFetcher,
+  useActionData,
+} from 'remix'
 import {v4} from 'uuid'
 import {MixedCheckbox} from '@reach/checkbox'
 import {getSession} from '~/sessions.server'
@@ -47,7 +53,6 @@ export const loader: LoaderFunction = async ({request, params}) => {
   const listName = decodeURIComponent(path)
 
   const listData = session.get(listName)
-
   if (!listData) {
     return json(
       {message: 'List Not Found'},
@@ -58,30 +63,14 @@ export const loader: LoaderFunction = async ({request, params}) => {
   }
   return json({
     message: '',
-    listData: {
-      tasks: [
-        {
-          id: v4(),
-          name: 'task',
-          isDone: false,
-          description:
-            'Something Something Something Something Something Something Something Something Something Something Something ',
-        },
-        {
-          id: v4(),
-          name: 'done task',
-          isDone: true,
-          description:
-            'Something Something Something Something Something Something Something Something Something Something Something ',
-        },
-      ],
-      reminders: [],
-    },
+    listName,
+    listData,
   })
 }
 
 export default function Todo() {
-  const {listData, message} = useLoaderData<{message: string; listData: List}>()
+  const {listData, message, listName} =
+    useLoaderData<{message: string; listName: string; listData: List}>()
   const fetcher = useFetcher()
   const [isAllChecked, setIsAllChecked] = React.useState<boolean | 'mixed'>(
     () => {
@@ -92,7 +81,19 @@ export default function Todo() {
       return 'mixed'
     },
   )
+  React.useEffect(() => {
+    const checkedLength = listData.tasks.filter(({isDone}) => isDone).length
 
+    if (checkedLength === listData.tasks.length) {
+      setIsAllChecked(true)
+      return
+    }
+    if (checkedLength === 0) {
+      setIsAllChecked(false)
+      return
+    }
+    setIsAllChecked('mixed')
+  }, [listData.tasks])
   return (
     <div>
       {/* // ! Todo use useFetcher 
@@ -105,6 +106,22 @@ export default function Todo() {
         <SkinCore>
           <SkinMain>
             <h2>ToDO</h2>
+            <button
+              type="button"
+              onClick={() => {
+                fetcher.submit(
+                  {name: `new list`, description: ''},
+                  {
+                    action: `/todo/new-task?path=${listName}`,
+                    method: 'put',
+                  },
+                )
+              }}
+            >
+              Create Task
+            </button>
+            <br />
+            {fetcher && JSON.stringify(fetcher, null, 2)}
             <fieldset>
               <label>
                 <MixedCheckbox
@@ -115,14 +132,20 @@ export default function Todo() {
                     if (typeof isAllChecked === 'string') {
                       fetcher.submit(
                         {tasks: `true`},
-                        {action: '/actions/todo/check-all'},
+                        {
+                          action: `/todo/check-all?path=${listName}`,
+                          method: 'put',
+                        },
                       )
-                      setIsAllChecked((state: any) => true)
+                      setIsAllChecked(true)
                       return
                     }
                     fetcher.submit(
                       {tasks: `${!isAllChecked}`},
-                      {action: '/actions/todo/check-all', method: 'put'},
+                      {
+                        action: `/todo/check-all?path=${listName}`,
+                        method: 'put',
+                      },
                     )
                     setIsAllChecked((state: any) => !state)
                   }}

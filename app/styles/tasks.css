@@ -79,6 +79,11 @@ fieldset {
   }
 }
 
+@media (prefers-color-scheme: dark) {
+  .task-root__container:where([data-state='false']) {
+    background: var(--color-background-secondary);
+  }
+}
 @media (prefers-color-scheme: no-preference) {
   .task-root__container:where([data-state='true']) {
     color: gray;
