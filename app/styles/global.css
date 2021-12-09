@@ -6,9 +6,26 @@
   --color-foreground: hsl(252, 7%, 14%);
   --color-background: hsl(0, 0%, 93%);
   --color-background-shadow: hsl(0, 0%, 50%, 0.2);
+  --color-background-gradient: linear-gradient(
+    135deg,
+    #3b25c4,
+    #4628c8,
+    #522acc,
+    #5e2dcf,
+    #6a32d0,
+    #7639d0,
+    #8240d0,
+    #8d47cf,
+    #974ecf,
+    #a054cf,
+    #a95bcf,
+    #b161cf
+  );
   --color-links: hsl(213, 100%, 52%);
   --color-links-hover: hsl(213, 100%, 43%);
   --color-border: hsl(181, 100%, 41%);
+  --color-red: #bd0817;
+  --color-green: #1bff62;
   --rounded: 0.7rem;
   --font-body: -apple-system, 'Segoe UI', Helvetica Neue, Helvetica, Roboto,
     Arial, sans-serif, system-ui, 'Apple Color Emoji', 'Segoe UI Emoji';
@@ -262,6 +279,21 @@ pre {
     --color-background: hsl(252, 7%, 14%);
     --color-background-secondary: #282a37;
     --color-background-shadow: #3437484f;
+    --color-background-gradient: linear-gradient(
+      135deg,
+      #181052,
+      #1e1255,
+      #241558,
+      #2b175b,
+      #311a5d,
+      #381d60,
+      #3e2062,
+      #452464,
+      #4b2766,
+      #512a68,
+      #572e69,
+      #5c326b
+    );
     --color-links: hsl(213, 100%, 73%);
     --color-links-hover: hsl(213, 100%, 80%);
     --color-red: #bd0817;

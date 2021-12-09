@@ -7,6 +7,8 @@ fieldset {
   padding: 0;
   border: none;
 }
+fieldset:first-child {
+}
 
 textarea {
   height: calc(6ch + 1.5em);
@@ -19,7 +21,20 @@ button:where([type='submit']) {
 }
 
 .task-root__container {
+  --m-tb: 0.9em;
   border-radius: var(--rounded);
+  margin-top: var(--m-tb);
+  margin-bottom: var(--m-tb);
+  box-shadow: -0.0002em 0.01em 0.65em -1px #035aea;
+  background: var(--color-background-shadow);
+}
+
+.task-root__container:where([data-state='true']) {
+  opacity: 0.83;
+  box-shadow: -0.0002em 0.01em 0.65em -1px var(--color-green);
+}
+
+.task-root__container:where([data-state='false']) {
 }
 
 .task-header__container {
@@ -51,16 +66,6 @@ button:where([type='submit']) {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.task-root__container:where([data-state='true']) {
-  background: var(--color-foreground);
-  opacity: 0.23;
-  color: var(--color-background-shadow);
-}
-
-.task-root__container:where([data-state='false']) {
-  background: var(--color-background-shadow);
 }
 
 [data-reach-disclosure-button] {
