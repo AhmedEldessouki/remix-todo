@@ -5,10 +5,11 @@ import {
   json,
   useFetcher,
   useActionData,
+  ActionFunction,
 } from 'remix'
 import {v4} from 'uuid'
 import {MixedCheckbox} from '@reach/checkbox'
-import {getSession} from '~/sessions.server'
+import {commitSession, getSession} from '~/sessions.server'
 import Task from '~/components/task'
 import {SkinAside, SkinCore, SkinMain} from '~/components/skin'
 import type {LoaderFunction, MetaFunction} from 'remix'
@@ -35,6 +36,38 @@ export const meta: MetaFunction = ({params}) => {
     title: listName,
     description: 'Congrats for sharing your list with people! 🥳',
   }
+}
+
+export const action: ActionFunction = async ({request, params}) => {
+  const session = await getSession(request.headers.get('Cookie'))
+  const formData = await request.formData()
+  const path = params['name']
+  const taskId = formData.get('taskId')
+  const isDone = formData.get('isDone')
+
+  if (!path) return json({message: 'ListName is undefined'})
+
+  const listName = decodeURIComponent(path)
+
+  const listData: List = session.get(listName)
+
+  const index = listData.tasks.findIndex(task => task.id === taskId)
+  listData.tasks[index].isDone = isDone?.toString() === 'true' ? true : false
+
+  session.set(listName, listData)
+
+  return json(
+    {
+      message: '',
+      taskId,
+      isDone,
+    },
+    {
+      headers: {
+        'Set-Cookie': await commitSession(session),
+      },
+    },
+  )
 }
 
 export const loader: LoaderFunction = async ({request, params}) => {
@@ -158,6 +191,7 @@ export default function Todo() {
                 {listData.tasks.map(({name, id, isDone, description}) => (
                   <Task
                     key={id}
+                    id={id}
                     name={name}
                     isDone={isDone}
                     description={description}

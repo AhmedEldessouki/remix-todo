@@ -2,6 +2,7 @@ import React from 'react'
 import {Disclosure, DisclosureButton, DisclosurePanel} from '@reach/disclosure'
 import VisuallyHidden from '@reach/visually-hidden'
 import {MixedCheckbox} from '@reach/checkbox'
+import {useFetcher} from 'remix'
 
 function TaskRoot({
   children,
@@ -27,14 +28,17 @@ function TaskHeader({
   handleDisclosure,
   isOpen,
   isDone,
+  id,
   isDisabled,
 }: {
   children: React.ReactNode
   handleDisclosure: () => void
   isOpen: boolean
   isDone: boolean
+  id: string
   isDisabled: boolean
 }) {
+  const fetcher = useFetcher()
   return (
     <div className="task-header__container">
       <label>
@@ -42,7 +46,9 @@ function TaskHeader({
           name="task"
           value={'name'}
           checked={isDone}
-          // onChange={handleChildChange}
+          onChange={() => {
+            fetcher.submit({taskId: id, isDone: `${!isDone}`}, {method: 'put'})
+          }}
         />
       </label>
       <DisclosureButton disabled={isDisabled} onClick={handleDisclosure}>
@@ -64,10 +70,12 @@ function TaskDescription({children}: {children: React.ReactNode}) {
 
 function Task({
   name,
+  id,
   isDone,
   description,
 }: {
   name: string
+  id: string
   isDone: boolean
   description: string
 }) {
@@ -77,6 +85,7 @@ function Task({
       <TaskHeader
         isDone={isDone}
         isOpen={isOpen}
+        id={id}
         isDisabled={description.length === 0}
         handleDisclosure={() => setIsOpen(state => !state)}
       >
