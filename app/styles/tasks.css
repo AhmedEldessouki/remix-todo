@@ -39,8 +39,18 @@ button:where([type='submit']) {
   margin: 0.5em 0 0.5em 0.3em;
 }
 
+.task-root__container > form {
+  overflow: hidden;
+}
+
 .task-header__container > label {
   width: 90%;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .task-root__container:where([data-state='true']) {

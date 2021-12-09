@@ -41,7 +41,7 @@ function TaskHeader({
   const fetcher = useFetcher()
   return (
     <div className="task-header__container">
-      <label>
+      <label className="center">
         <MixedCheckbox
           name="task"
           value={'name'}
