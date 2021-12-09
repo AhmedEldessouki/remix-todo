@@ -83,6 +83,7 @@ li {
   list-style: none;
 }
 
+textarea,
 input:where([type='text']),
 input:where([type='search']) {
   display: block;
@@ -96,6 +97,7 @@ input:where([type='search']) {
   margin: 0.5em 0;
   background-color: hsl(0 0% 100% / 20%);
   color: var(--color-foreground);
+  border-radius: 0.2em;
 }
 
 pre {

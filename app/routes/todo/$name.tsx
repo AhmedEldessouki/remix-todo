@@ -10,10 +10,10 @@ import {
 import {v4} from 'uuid'
 import {MixedCheckbox} from '@reach/checkbox'
 import {commitSession, getSession} from '~/sessions.server'
-import Task from '~/components/task'
+import Task, {CreateTask} from '~/components/task'
 import {SkinAside, SkinCore, SkinMain} from '~/components/skin'
 import type {LoaderFunction, MetaFunction} from 'remix'
-import type {List} from '~/types'
+import type {List, ObjectOfStrings} from '~/types'
 
 import taskStyles from '~/styles/tasks.css'
 
@@ -41,33 +41,86 @@ export const meta: MetaFunction = ({params}) => {
 export const action: ActionFunction = async ({request, params}) => {
   const session = await getSession(request.headers.get('Cookie'))
   const formData = await request.formData()
+
+  type Keys = 'isDone' | 'description' | 'name' | 'taskId' | 'id'
+
+  const toBeReturned: {
+    errors: ObjectOfStrings
+    formData: Record<Keys, string | null>
+  } = {
+    errors: {},
+    formData: {
+      isDone: null,
+      description: null,
+      name: null,
+      taskId: null,
+      id: null,
+    },
+  }
+
   const path = params['name']
-  const taskId = formData.get('taskId')
-  const isDone = formData.get('isDone')
 
-  if (!path) return json({message: 'ListName is undefined'})
-
+  if (!path) {
+    toBeReturned.errors['message'] = 'ListName is undefined'
+    return json(toBeReturned)
+  }
   const listName = decodeURIComponent(path)
 
   const listData: List = session.get(listName)
 
-  const index = listData.tasks.findIndex(task => task.id === taskId)
-  listData.tasks[index].isDone = isDone?.toString() === 'true' ? true : false
+  switch (request.method.toLocaleLowerCase()) {
+    case 'put': {
+      toBeReturned.formData.taskId = formData.get('taskId')?.toString() ?? ''
+      toBeReturned.formData.isDone = formData.get('isDone')?.toString() ?? ''
+      toBeReturned.formData.description =
+        formData.get('description')?.toString() ?? ''
+
+      if (!toBeReturned.formData.taskId) throw new Error('must provide ID')
+      const index = listData.tasks.findIndex(
+        task => task.id === toBeReturned.formData.taskId,
+      )
+      if (toBeReturned.formData.description.length === 0) {
+        listData.tasks[index].isDone =
+          toBeReturned.formData.isDone === 'true' ? true : false
+        break
+      }
+
+      listData.tasks[index].description = toBeReturned.formData.description
+      break
+    }
+    case 'post': {
+      toBeReturned.formData.name = formData.get('name')?.toString() ?? ''
+      toBeReturned.formData.description =
+        formData.get('description')?.toString() ?? ''
+      toBeReturned.formData.id = v4()
+
+      listData.tasks[listData.tasks.length] = {
+        name: formData.get('name')?.toString() ?? '',
+        description: formData.get('description')?.toString() ?? '',
+        id: toBeReturned.formData.id,
+        isDone: false,
+      }
+      break
+    }
+
+    default:
+      toBeReturned.errors[
+        'message'
+      ] = `Method[${request.method}] is not handled`
+      return json(toBeReturned)
+  }
+
+  if (Object.values(toBeReturned.errors).length > 0) {
+    return json(toBeReturned)
+  }
 
   session.set(listName, listData)
 
-  return json(
-    {
-      message: '',
-      taskId,
-      isDone,
+  return json(toBeReturned, {
+    headers: {
+      'Set-Cookie': await commitSession(session),
     },
-    {
-      headers: {
-        'Set-Cookie': await commitSession(session),
-      },
-    },
-  )
+  })
 }
 
 export const loader: LoaderFunction = async ({request, params}) => {
@@ -187,7 +240,7 @@ export default function Todo() {
               </label>
               <fieldset style={{margin: '1rem 0 0', padding: '1rem 1.5rem'}}>
                 <legend>Tasks</legend>
-
+                <CreateTask />
                 {listData.tasks.map(({name, id, isDone, description}) => (
                   <Task
                     key={id}

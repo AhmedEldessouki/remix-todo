@@ -8,6 +8,16 @@ fieldset {
   border: none;
 }
 
+textarea {
+  height: calc(6ch + 1.5em);
+  padding: 0.6em 1em;
+}
+
+button:where([type='submit']) {
+  margin: 0.2em auto;
+  padding: 0.4em 0.5em;
+}
+
 .task-root__container {
   border-radius: var(--rounded);
 }
@@ -29,6 +39,10 @@ fieldset {
   margin: 0.5em 0 0.5em 0.3em;
 }
 
+.task-header__container > label {
+  width: 90%;
+}
+
 .task-root__container:where([data-state='true']) {
   background: var(--color-foreground);
   opacity: 0.23;
@@ -48,6 +62,13 @@ fieldset {
 [data-reach-disclosure-panel] {
   border-end-end-radius: var(--rounded);
   border-end-start-radius: var(--rounded);
+}
+
+.panel-with-form {
+  display: flex;
+  flex-direction: column;
+  padding-left: 0.6rem;
+  padding-bottom: 0.3em;
 }
 
 [data-reach-disclosure-panel][data-state='open'] {
@@ -93,4 +114,9 @@ fieldset {
   .task-root__container:where([data-state='true']) {
     color: gray;
   }
+}
+
+button > svg {
+  border: none;
+  width: 1.3em;
 }
