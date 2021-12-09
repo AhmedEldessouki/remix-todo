@@ -192,22 +192,6 @@ export default function Todo() {
         <SkinCore>
           <SkinMain>
             <h2>ToDO</h2>
-            <button
-              type="button"
-              onClick={() => {
-                fetcher.submit(
-                  {name: `new list`, description: ''},
-                  {
-                    action: `/todo/new-task?path=${listName}`,
-                    method: 'put',
-                  },
-                )
-              }}
-            >
-              Create Task
-            </button>
-            <br />
-            {fetcher && JSON.stringify(fetcher, null, 2)}
             <fieldset>
               <label>
                 <MixedCheckbox

@@ -25,21 +25,22 @@ button:where([type='submit']) {
   border-radius: var(--rounded);
   margin-top: var(--m-tb);
   margin-bottom: var(--m-tb);
-  box-shadow: -0.0002em 0.01em 0.65em -1px #035aea;
+  box-shadow: 0.0002em 0.01em 0.65em -1px #035aea;
   background: var(--color-background-shadow);
 }
 
 .task-root__container:where([data-state='true']) {
   opacity: 0.83;
-  box-shadow: -0.0002em 0.01em 0.65em -1px var(--color-green);
+  box-shadow: 0.0002em 0.01em 0.65em -1px var(--color-green);
 }
 
-.task-root__container:where([data-state='false']) {
+.task-form {
+  background-image: var(--color-background-gradient) !important;
 }
 
 .task-header__container {
   display: grid;
-  grid-template-columns: 3em 3em 1fr;
+  grid-template-columns: 3em 3em 1fr 3em;
   align-items: center;
   margin: 0.5em 0;
   justify-items: center;
@@ -68,6 +69,19 @@ button:where([type='submit']) {
   align-items: center;
 }
 
+.panel-with-form {
+  display: flex;
+  flex-direction: column;
+  padding: 0 0.6rem 0.3rem;
+}
+
+.button-clean {
+  border: none;
+  width: 1.8em;
+  padding: 0;
+  margin: 0;
+}
+
 [data-reach-disclosure-button] {
   padding: 0.5rem 0.6rem;
   justify-self: center;
@@ -77,13 +91,6 @@ button:where([type='submit']) {
 [data-reach-disclosure-panel] {
   border-end-end-radius: var(--rounded);
   border-end-start-radius: var(--rounded);
-}
-
-.panel-with-form {
-  display: flex;
-  flex-direction: column;
-  padding-left: 0.6rem;
-  padding-bottom: 0.3em;
 }
 
 [data-reach-disclosure-panel][data-state='open'] {
@@ -129,9 +136,4 @@ button:where([type='submit']) {
   .task-root__container:where([data-state='true']) {
     color: gray;
   }
-}
-
-button > svg {
-  border: none;
-  width: 1.3em;
 }

@@ -5,21 +5,24 @@ import {MixedCheckbox} from '@reach/checkbox'
 import {Form, useFetcher} from 'remix'
 import {v4} from 'uuid'
 import Input from './input'
+import Bell from './bell'
 
 function TaskRoot({
   children,
   isDone,
+  className = '',
   isOpen,
 }: {
   children: React.ReactNode
   isDone: boolean
   isOpen: boolean
+  className?: string
 }) {
   // ! TODO: Handle is-done in css for a change
   // * Note To Self: cannot use self-made attributes but
   // * but you can use data-state to control the styling
   return (
-    <li className="task-root__container" data-state={isDone}>
+    <li className={`task-root__container ${className}`} data-state={isDone}>
       <Disclosure open={isOpen}>{children}</Disclosure>
     </li>
   )
@@ -56,6 +59,9 @@ function TaskHeader({
         <VisuallyHidden>description</VisuallyHidden>
       </DisclosureButton>
       {children}
+      <button type="button" className="button-clean">
+        <Bell />
+      </button>
     </div>
   )
 }
@@ -79,7 +85,7 @@ function CreateTask() {
   const {current: id} = React.useRef(v4())
   const fetcher = useFetcher()
   return (
-    <TaskRoot isOpen={isOpen} isDone={false}>
+    <TaskRoot isOpen={isOpen} isDone={false} className="task-form">
       <fetcher.Form method="post">
         <TaskHeader
           isDone={false}
@@ -140,7 +146,7 @@ function Task({
         {description ? (
           <blockquote>{description}</blockquote>
         ) : (
-          <fetcher.Form method="put">
+          <fetcher.Form method="put" reloadDocument>
             <label htmlFor="add-task-description" aria-label="description">
               <textarea
                 name="description"
@@ -151,7 +157,7 @@ function Task({
               />
             </label>
             <input type="hidden" value={id} name="taskId" />
-            <button type="submit">
+            <button type="submit" className="button-clean">
               <SendIcon />
             </button>
           </fetcher.Form>

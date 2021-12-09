@@ -7,19 +7,9 @@
   --color-background: hsl(0, 0%, 93%);
   --color-background-shadow: hsl(0, 0%, 50%, 0.2);
   --color-background-gradient: linear-gradient(
-    135deg,
-    #3b25c4,
-    #4628c8,
-    #522acc,
-    #5e2dcf,
-    #6a32d0,
-    #7639d0,
-    #8240d0,
-    #8d47cf,
-    #974ecf,
-    #a054cf,
-    #a95bcf,
-    #b161cf
+    to top,
+    #accbee 0%,
+    #e7f0fd 100%
   );
   --color-links: hsl(213, 100%, 52%);
   --color-links-hover: hsl(213, 100%, 43%);
@@ -83,6 +73,7 @@ button {
   border-color: var(--color-border);
   letter-spacing: 0.03rem;
   margin: 0.8em 0;
+  cursor: pointer;
 }
 
 hr {
