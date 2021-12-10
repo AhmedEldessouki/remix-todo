@@ -13,7 +13,7 @@ import {commitSession, getSession} from '~/sessions.server'
 import Task, {CreateTask} from '~/components/task'
 import {SkinAside, SkinCore, SkinMain} from '~/components/skin'
 import type {LoaderFunction, MetaFunction} from 'remix'
-import type {List, ObjectOfStrings} from '~/types'
+import type {TaskType, ObjectOfStrings} from '~/types'
 
 import taskStyles from '~/styles/tasks.css'
 
@@ -66,7 +66,7 @@ export const action: ActionFunction = async ({request, params}) => {
   }
   const listName = decodeURIComponent(path)
 
-  const listData: List = session.get(listName)
+  const listData: TaskType = session.get(listName)
 
   switch (request.method.toLocaleLowerCase()) {
     case 'put': {
@@ -156,7 +156,7 @@ export const loader: LoaderFunction = async ({request, params}) => {
 
 export default function Todo() {
   const {listData, message, listName} =
-    useLoaderData<{message: string; listName: string; listData: List}>()
+    useLoaderData<{message: string; listName: string; listData: TaskType}>()
   const fetcher = useFetcher()
   const [isAllChecked, setIsAllChecked] = React.useState<boolean | 'mixed'>(
     () => {

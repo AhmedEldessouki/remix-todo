@@ -1,7 +1,7 @@
 import {json, redirect} from 'remix'
 import {commitSession, getSession} from '~/sessions.server'
 import type {ActionFunction, LoaderFunction} from 'remix'
-import type {List} from '~/types'
+import type {TaskType} from '~/types'
 
 export const action: ActionFunction = async ({request}) => {
   const session = await getSession(request.headers.get('Cookie'))
@@ -19,7 +19,7 @@ export const action: ActionFunction = async ({request}) => {
   }
   if (isChecked === null) return json({message: 'Form/Tasks was null'})
 
-  const listData: List = session.get(listName.toString())
+  const listData: TaskType = session.get(listName.toString())
 
   if (!listData) {
     return json(
@@ -30,7 +30,7 @@ export const action: ActionFunction = async ({request}) => {
     )
   }
 
-  const newListData: List = {
+  const newListData: TaskType = {
     tasks: listData.tasks.map(task => {
       task.isDone = isChecked === 'true' ? true : false
       return task

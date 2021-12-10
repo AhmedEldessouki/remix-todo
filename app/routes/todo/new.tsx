@@ -2,7 +2,7 @@ import React from 'react'
 import {Form, json, useFetcher, redirect} from 'remix'
 import {commitSession, getSession} from '~/sessions.server'
 import type {ActionFunction, MetaFunction} from 'remix'
-import type {List, Lists, ObjectOfStrings} from '~/types'
+import type {TaskType, Lists, ObjectOfStrings} from '~/types'
 import Input from '~/components/input'
 import {v4} from 'uuid'
 import {hasListName} from '~/utils'
@@ -49,7 +49,7 @@ export const action: ActionFunction = async ({request}) => {
 
   const someId = v4()
 
-  const defaultList: List = {
+  const defaultList: TaskType = {
     tasks: [
       {
         id: someId,
