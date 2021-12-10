@@ -4,8 +4,8 @@ import {
   useLoaderData,
   json,
   useFetcher,
-  useActionData,
   ActionFunction,
+  redirect,
 } from 'remix'
 import {v4} from 'uuid'
 import {MixedCheckbox} from '@reach/checkbox'
@@ -16,6 +16,7 @@ import type {LoaderFunction, MetaFunction} from 'remix'
 import type {TaskType, ObjectOfStrings} from '~/types'
 
 import taskStyles from '~/styles/tasks.css'
+import Reminder from '~/components/reminder'
 
 export const links: LinksFunction = () => [
   {
@@ -38,11 +39,11 @@ export const meta: MetaFunction = ({params}) => {
   }
 }
 
+type Keys = 'isDone' | 'description' | 'name' | 'taskId' | 'id'
+
 export const action: ActionFunction = async ({request, params}) => {
   const session = await getSession(request.headers.get('Cookie'))
   const formData = await request.formData()
-
-  type Keys = 'isDone' | 'description' | 'name' | 'taskId' | 'id'
 
   const toBeReturned: {
     errors: ObjectOfStrings
@@ -139,6 +140,7 @@ export const loader: LoaderFunction = async ({request, params}) => {
   const listName = decodeURIComponent(path)
 
   const listData = session.get(listName)
+
   if (!listData) {
     return json(
       {message: 'List Not Found'},
@@ -150,7 +152,7 @@ export const loader: LoaderFunction = async ({request, params}) => {
   return json({
     message: '',
     listName,
-    listData,
+    listData: listData,
   })
 }
 
@@ -180,6 +182,7 @@ export default function Todo() {
     }
     setIsAllChecked('mixed')
   }, [listData.tasks])
+
   return (
     <div>
       {/* // ! Todo use useFetcher 
@@ -239,8 +242,12 @@ export default function Todo() {
           </SkinMain>
           <SkinAside>
             <h2>Reminders</h2>
-            {listData.reminders.map(reminder =>
-              JSON.stringify(reminder, null, 2),
+            {typeof window === undefined ? (
+              <div />
+            ) : (
+              listData.reminders.map(({id, todoId, start, end}) => (
+                <Reminder key={id} todoId={todoId} start={start} end={end} />
+              ))
             )}
           </SkinAside>
         </SkinCore>

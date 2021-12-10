@@ -2,7 +2,7 @@ type Lists = Array<{name: string; url: string; id: string}>
 
 type TaskData = {name: string; isDone: boolean; id: string; description: string}
 
-type TaskReminder = {id: string; todoId: string; start: Date; end: Date}
+type TaskReminder = {id: string; todoId: string; start: number; end: number}
 
 type TaskType = {
   tasks: Array<TaskData>

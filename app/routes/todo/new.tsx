@@ -70,8 +70,8 @@ export const action: ActionFunction = async ({request}) => {
       {
         todoId: someId,
         id: v4(),
-        start: new Date(Date.now() + 300000),
-        end: new Date(Date.now() + 31000000),
+        start: Date.now() + 300000,
+        end: Date.now() + 31000000,
       },
     ],
   }

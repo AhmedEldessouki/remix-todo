@@ -82,6 +82,17 @@ button:where([type='submit']) {
   margin: 0;
 }
 
+.reminder__container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0.5fr, 1fr));
+  grid-template-rows: repeat(2, 1fr);
+  align-items: center;
+  margin: 0.5em 0;
+  justify-items: center;
+  align-items: center;
+  text-transform: capitalize;
+}
+
 [data-reach-disclosure-button] {
   padding: 0.5rem 0.6rem;
   justify-self: center;
