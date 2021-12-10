@@ -34,12 +34,14 @@ function TaskHeader({
   isOpen,
   isDone,
   id,
+  disableCheck = false,
 }: {
   children: React.ReactNode
   handleDisclosure: () => void
   isOpen: boolean
   isDone: boolean
   id: string
+  disableCheck?: boolean
 }) {
   const fetcher = useFetcher()
   return (
@@ -48,6 +50,7 @@ function TaskHeader({
         <MixedCheckbox
           name="task"
           value={'name'}
+          disabled={disableCheck}
           checked={isDone}
           onChange={() => {
             fetcher.submit({taskId: id, isDone: `${!isDone}`}, {method: 'put'})
@@ -92,6 +95,7 @@ function CreateTask() {
           isOpen={isOpen}
           id={id}
           handleDisclosure={() => setIsOpen(state => !state)}
+          disableCheck
         >
           <Input
             label=""
