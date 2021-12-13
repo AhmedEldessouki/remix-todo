@@ -4,7 +4,7 @@ import {SkinAside, SkinCore, SkinMain} from '~/components/skin'
 export let meta: MetaFunction = () => {
   return {
     title: 'Todo',
-    description:
+    notes:
       'Welcome to Todo! Here You create it, You keep it.' +
       " We don't what you use this site for! So whatever you write down here." +
       " Only get's saved on your device as a secure Cookie. Secure using only the password you provide." +

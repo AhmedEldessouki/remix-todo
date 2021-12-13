@@ -59,7 +59,7 @@ function TaskHeader({
       </label>
       <DisclosureButton onClick={handleDisclosure}>
         <span aria-hidden>{isOpen ? '🔽' : '🔼'}</span>
-        <VisuallyHidden>description</VisuallyHidden>
+        <VisuallyHidden>notes</VisuallyHidden>
       </DisclosureButton>
       {children}
       <button type="button" className="button-clean">
@@ -69,7 +69,7 @@ function TaskHeader({
   )
 }
 
-function TaskDescription({
+function TaskNotes({
   children,
   className = '',
 }: {
@@ -106,18 +106,18 @@ function CreateTask() {
             placeholder="Enter new task name"
           />
         </TaskHeader>
-        <TaskDescription className="panel-with-form">
-          <label htmlFor="create-task-description" aria-label="description">
+        <TaskNotes className="panel-with-form">
+          <label htmlFor="create-task-notes" aria-label="notes">
             <textarea
-              name="description"
-              id="create-task-description"
+              name="notes"
+              id="create-task-notes"
               rows={20}
               cols={20}
               placeholder="Enter your notes here"
             />
           </label>
           <button type="submit">Submit</button>
-        </TaskDescription>
+        </TaskNotes>
       </fetcher.Form>
     </TaskRoot>
   )
@@ -127,12 +127,12 @@ function Task({
   name,
   id,
   isDone,
-  description,
+  notes,
 }: {
   name: string
   id: string
   isDone: boolean
-  description: string
+  notes: string
 }) {
   const [isOpen, setIsOpen] = React.useState(false)
   const fetcher = useFetcher()
@@ -146,15 +146,15 @@ function Task({
       >
         <h3>{name}</h3>
       </TaskHeader>
-      <TaskDescription>
-        {description ? (
-          <blockquote>{description}</blockquote>
+      <TaskNotes>
+        {notes ? (
+          <blockquote>{notes}</blockquote>
         ) : (
           <fetcher.Form method="put" reloadDocument>
-            <label htmlFor="add-task-description" aria-label="description">
+            <label htmlFor="add-task-notes" aria-label="notes">
               <textarea
-                name="description"
-                id="add-task-description"
+                name="notes"
+                id="add-task-notes"
                 rows={20}
                 cols={20}
                 placeholder="Enter your notes here"
@@ -166,7 +166,7 @@ function Task({
             </button>
           </fetcher.Form>
         )}
-      </TaskDescription>
+      </TaskNotes>
     </TaskRoot>
   )
 }
@@ -189,4 +189,4 @@ const SendIcon = () => (
 )
 
 export default Task
-export {TaskDescription, TaskHeader, TaskRoot, CreateTask}
+export {TaskNotes, TaskHeader, TaskRoot, CreateTask}

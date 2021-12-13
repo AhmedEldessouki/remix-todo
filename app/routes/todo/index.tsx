@@ -6,7 +6,7 @@ import type {Lists} from '~/types'
 export const meta: MetaFunction = () => {
   return {
     title: 'Todo',
-    description:
+    notes:
       'Here you can navigate to a list or' +
       ' go to create list to create a new list.',
   }

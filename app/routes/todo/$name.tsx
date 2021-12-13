@@ -30,16 +30,16 @@ export const meta: MetaFunction = ({params}) => {
   if (!listName)
     return {
       title: 'Invalid ListName!',
-      description: 'Something went wrong. Please check list name.',
+      notes: 'Something went wrong. Please check list name.',
     }
 
   return {
     title: listName,
-    description: 'Congrats for sharing your list with people! 🥳',
+    notes: 'Congrats for sharing your list with people! 🥳',
   }
 }
 
-type Keys = 'isDone' | 'description' | 'name' | 'taskId' | 'id'
+type Keys = 'isDone' | 'notes' | 'name' | 'taskId' | 'id'
 
 export const action: ActionFunction = async ({request, params}) => {
   const session = await getSession(request.headers.get('Cookie'))
@@ -52,7 +52,7 @@ export const action: ActionFunction = async ({request, params}) => {
     errors: {},
     formData: {
       isDone: null,
-      description: null,
+      notes: null,
       name: null,
       taskId: null,
       id: null,
@@ -73,31 +73,29 @@ export const action: ActionFunction = async ({request, params}) => {
     case 'put': {
       toBeReturned.formData.taskId = formData.get('taskId')?.toString() ?? ''
       toBeReturned.formData.isDone = formData.get('isDone')?.toString() ?? ''
-      toBeReturned.formData.description =
-        formData.get('description')?.toString() ?? ''
+      toBeReturned.formData.notes = formData.get('notes')?.toString() ?? ''
 
       if (!toBeReturned.formData.taskId) throw new Error('must provide ID')
       const index = listData.tasks.findIndex(
         task => task.id === toBeReturned.formData.taskId,
       )
-      if (toBeReturned.formData.description.length === 0) {
+      if (toBeReturned.formData.notes.length === 0) {
         listData.tasks[index].isDone =
           toBeReturned.formData.isDone === 'true' ? true : false
         break
       }
 
-      listData.tasks[index].description = toBeReturned.formData.description
+      listData.tasks[index].notes = toBeReturned.formData.notes
       break
     }
     case 'post': {
       toBeReturned.formData.name = formData.get('name')?.toString() ?? ''
-      toBeReturned.formData.description =
-        formData.get('description')?.toString() ?? ''
+      toBeReturned.formData.notes = formData.get('notes')?.toString() ?? ''
       toBeReturned.formData.id = v4()
 
       listData.tasks[listData.tasks.length] = {
         name: formData.get('name')?.toString() ?? '',
-        description: formData.get('description')?.toString() ?? '',
+        notes: formData.get('notes')?.toString() ?? '',
         id: toBeReturned.formData.id,
         isDone: false,
       }
@@ -228,13 +226,13 @@ export default function Todo() {
               <fieldset style={{margin: '1rem 0 0', padding: '1rem 1.5rem'}}>
                 <legend>Tasks</legend>
                 <CreateTask />
-                {listData.tasks.map(({name, id, isDone, description}) => (
+                {listData.tasks.map(({name, id, isDone, notes}) => (
                   <Task
                     key={id}
                     id={id}
                     name={name}
                     isDone={isDone}
-                    description={description}
+                    notes={notes}
                   />
                 ))}
               </fieldset>

@@ -10,7 +10,7 @@ import {hasListName} from '~/utils'
 export const meta: MetaFunction = () => {
   return {
     title: 'Create List',
-    description: 'Create a new list!',
+    notes: 'Create a new list!',
   }
 }
 
@@ -55,14 +55,14 @@ export const action: ActionFunction = async ({request}) => {
         id: someId,
         name: 'task',
         isDone: false,
-        description:
+        notes:
           'Something Something Something Something Something Something Something Something Something Something Something ',
       },
       {
         id: v4(),
         name: 'done task',
         isDone: true,
-        description:
+        notes:
           'Something Something Something Something Something Something Something Something Something Something Something ',
       },
     ],
