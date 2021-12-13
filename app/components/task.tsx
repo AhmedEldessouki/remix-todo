@@ -2,9 +2,10 @@ import React from 'react'
 import {Disclosure, DisclosureButton, DisclosurePanel} from '@reach/disclosure'
 import VisuallyHidden from '@reach/visually-hidden'
 import {MixedCheckbox} from '@reach/checkbox'
-import {Form, useFetcher} from 'remix'
+import {Form, Link, useFetcher} from 'remix'
 import {v4} from 'uuid'
 import Input from './input'
+import {AddReminder} from './reminder'
 import Bell from './bell'
 
 function TaskRoot({
@@ -62,9 +63,10 @@ function TaskHeader({
         <VisuallyHidden>notes</VisuallyHidden>
       </DisclosureButton>
       {children}
-      <button type="button" className="button-clean">
+      <Link to={`add-reminder?task-id=${id}`}>
         <Bell />
-      </button>
+        <VisuallyHidden>add reminder</VisuallyHidden>
+      </Link>
     </div>
   )
 }

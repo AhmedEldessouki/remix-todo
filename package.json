@@ -11,6 +11,7 @@
     "start": "remix-serve build"
   },
   "dependencies": {
+    "@reach/alert-dialog": "^0.16.2",
     "@reach/checkbox": "^0.16.0",
     "@reach/disclosure": "^0.16.2",
     "@reach/visually-hidden": "^0.16.0",

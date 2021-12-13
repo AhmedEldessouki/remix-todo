@@ -68,7 +68,7 @@ export const action: ActionFunction = async ({request}) => {
     ],
     reminders: [
       {
-        todoId: someId,
+        taskId: someId,
         id: v4(),
         start: Date.now() + 300000,
         end: Date.now() + 31000000,

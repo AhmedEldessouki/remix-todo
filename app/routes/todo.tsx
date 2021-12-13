@@ -1,4 +1,4 @@
-import {Outlet, json, Link, useLoaderData} from 'remix'
+import {Outlet, json, NavLink, useLoaderData} from 'remix'
 import type {LoaderFunction} from 'remix'
 import React from 'react'
 import {getSession} from '~/sessions.server'
@@ -20,11 +20,11 @@ export default function Todo() {
       <nav>
         <ul>
           <li>
-            <Link to="new">Create New List</Link>
+            <NavLink to="new">Create New List</NavLink>
           </li>
           {lists.map(({name, url, id}) => (
             <li key={id}>
-              <Link to={url}>{name}</Link>
+              <NavLink to={url}>{name}</NavLink>
             </li>
           ))}
         </ul>

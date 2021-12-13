@@ -5,18 +5,19 @@ import {
   json,
   useFetcher,
   ActionFunction,
-  redirect,
+  Link,
+  Outlet,
 } from 'remix'
 import {v4} from 'uuid'
 import {MixedCheckbox} from '@reach/checkbox'
 import {commitSession, getSession} from '~/sessions.server'
 import Task, {CreateTask} from '~/components/task'
 import {SkinAside, SkinCore, SkinMain} from '~/components/skin'
+import {AddReminder, ReminderDisplay} from '~/components/reminder'
 import type {LoaderFunction, MetaFunction} from 'remix'
 import type {TaskType, ObjectOfStrings} from '~/types'
 
 import taskStyles from '~/styles/tasks.css'
-import Reminder from '~/components/reminder'
 
 export const links: LinksFunction = () => [
   {
@@ -39,7 +40,7 @@ export const meta: MetaFunction = ({params}) => {
   }
 }
 
-type Keys = 'isDone' | 'notes' | 'name' | 'taskId' | 'id'
+type Keys = 'isDone' | 'notes' | 'name' | 'taskId' | 'id' | 'start' | 'end'
 
 export const action: ActionFunction = async ({request, params}) => {
   const session = await getSession(request.headers.get('Cookie'))
@@ -56,6 +57,8 @@ export const action: ActionFunction = async ({request, params}) => {
       name: null,
       taskId: null,
       id: null,
+      start: null,
+      end: null,
     },
   }
 
@@ -71,14 +74,30 @@ export const action: ActionFunction = async ({request, params}) => {
 
   switch (request.method.toLocaleLowerCase()) {
     case 'put': {
-      toBeReturned.formData.taskId = formData.get('taskId')?.toString() ?? ''
       toBeReturned.formData.isDone = formData.get('isDone')?.toString() ?? ''
       toBeReturned.formData.notes = formData.get('notes')?.toString() ?? ''
+      toBeReturned.formData.taskId = formData.get('taskId')?.toString() ?? ''
+      toBeReturned.formData.start = formData.get('start')?.toString() ?? ''
+      toBeReturned.formData.end = formData.get('end')?.toString() ?? ''
 
       if (!toBeReturned.formData.taskId) throw new Error('must provide ID')
+
       const index = listData.tasks.findIndex(
         task => task.id === toBeReturned.formData.taskId,
       )
+      if (toBeReturned.formData.end) {
+        console.log(
+          toBeReturned.formData.taskId,
+          toBeReturned.formData.start,
+          toBeReturned.formData.end,
+        )
+        // listData.reminders.push({
+        //   taskId: toBeReturned.formData.taskId,
+        //   start: toBeReturned.formData.start,
+        //   end: toBeReturned.formData.end,
+        // })
+        break
+      }
       if (toBeReturned.formData.notes.length === 0) {
         listData.tasks[index].isDone =
           toBeReturned.formData.isDone === 'true' ? true : false
@@ -167,6 +186,7 @@ export default function Todo() {
       return 'mixed'
     },
   )
+
   React.useEffect(() => {
     const checkedLength = listData.tasks.filter(({isDone}) => isDone).length
 
@@ -190,65 +210,75 @@ export default function Todo() {
       {message ? (
         <span>{message}</span>
       ) : (
-        <SkinCore>
-          <SkinMain>
-            <h2>ToDO</h2>
-            <fieldset>
-              <label>
-                <MixedCheckbox
-                  value="tasks"
-                  name="tasks"
-                  checked={isAllChecked}
-                  onChange={() => {
-                    if (typeof isAllChecked === 'string') {
+        <>
+          <Outlet />
+          <SkinCore>
+            <Link to="add-reminder">add-reminder</Link>
+            <SkinMain>
+              <h2>ToDO</h2>
+              <fieldset>
+                <label>
+                  <MixedCheckbox
+                    value="tasks"
+                    name="tasks"
+                    checked={isAllChecked}
+                    onChange={() => {
+                      if (typeof isAllChecked === 'string') {
+                        fetcher.submit(
+                          {tasks: `true`},
+                          {
+                            action: `/todo/check-all?path=${listName}`,
+                            method: 'put',
+                          },
+                        )
+                        setIsAllChecked(true)
+                        return
+                      }
                       fetcher.submit(
-                        {tasks: `true`},
+                        {tasks: `${!isAllChecked}`},
                         {
                           action: `/todo/check-all?path=${listName}`,
                           method: 'put',
                         },
                       )
-                      setIsAllChecked(true)
-                      return
-                    }
-                    fetcher.submit(
-                      {tasks: `${!isAllChecked}`},
-                      {
-                        action: `/todo/check-all?path=${listName}`,
-                        method: 'put',
-                      },
-                    )
-                    setIsAllChecked((state: any) => !state)
-                  }}
-                />
-                {true ? 'Unselect' : 'Select'} all condiments
-              </label>
-              <fieldset style={{margin: '1rem 0 0', padding: '1rem 1.5rem'}}>
-                <legend>Tasks</legend>
-                <CreateTask />
-                {listData.tasks.map(({name, id, isDone, notes}) => (
-                  <Task
+                      setIsAllChecked((state: any) => !state)
+                    }}
+                  />
+                  {true ? 'Unselect' : 'Select'} all condiments
+                </label>
+                <fieldset style={{margin: '1rem 0 0', padding: '1rem 1.5rem'}}>
+                  <legend>Tasks</legend>
+                  <CreateTask />
+                  {listData.tasks.map(({name, id, isDone, notes}) => (
+                    <Task
+                      key={id}
+                      id={id}
+                      name={name}
+                      isDone={isDone}
+                      notes={notes}
+                    />
+                  ))}
+                </fieldset>
+              </fieldset>
+            </SkinMain>
+            <SkinAside>
+              <h2>Reminders</h2>
+              {typeof window === undefined ? (
+                <div />
+              ) : (
+                listData.reminders.map(({id, taskId, start, end}) => (
+                  <ReminderDisplay
                     key={id}
                     id={id}
-                    name={name}
-                    isDone={isDone}
-                    notes={notes}
+                    taskId={taskId}
+                    start={start}
+                    end={end}
                   />
-                ))}
-              </fieldset>
-            </fieldset>
-          </SkinMain>
-          <SkinAside>
-            <h2>Reminders</h2>
-            {typeof window === undefined ? (
-              <div />
-            ) : (
-              listData.reminders.map(({id, todoId, start, end}) => (
-                <Reminder key={id} todoId={todoId} start={start} end={end} />
-              ))
-            )}
-          </SkinAside>
-        </SkinCore>
+                ))
+              )}
+            </SkinAside>
+          </SkinCore>
+        </>
       )}
     </div>
   )

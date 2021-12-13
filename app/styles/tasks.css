@@ -20,6 +20,10 @@ button:where([type='submit']) {
   padding: 0.4em 0.5em;
 }
 
+svg {
+  width: 30px;
+}
+
 .task-root__container {
   --m-tb: 0.9em;
   border-radius: var(--rounded);
