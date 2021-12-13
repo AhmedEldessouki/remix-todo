@@ -6,22 +6,24 @@ import {
 } from '@reach/alert-dialog'
 import React from 'react'
 import {
-  ActionFunction,
   redirect,
   Link,
-  LoaderFunction,
-  MetaFunction,
   useFetcher,
   useLoaderData,
   json,
-  LinksFunction,
+  useSearchParams,
 } from 'remix'
 import {v4} from 'uuid'
-import Bell from '~/components/bell'
 import {commitSession, getSession} from '~/sessions.server'
-import {ObjectOfStrings, TaskType} from '~/types'
+import type {ActionFunction, LoaderFunction, LinksFunction} from 'remix'
+import type {ObjectOfStrings, TaskType} from '~/types'
 
 import addReminderStyles from '~/styles/add-reminder.css'
+
+// ! Todo: Check the Date and Time Input
+// ! Todo: If the also have reported bug concerning
+// ! Todo: Some days
+// ! Todo: Also on FireFox Time Doesn't Work!! on DateTimeLocal input
 
 export const links: LinksFunction = () => [
   {
@@ -29,20 +31,6 @@ export const links: LinksFunction = () => [
     href: addReminderStyles,
   },
 ]
-
-export const meta: MetaFunction = ({params}) => {
-  const listName = params['name']
-  if (!listName)
-    return {
-      title: 'Invalid ListName!',
-      notes: 'Something went wrong. Please check list name.',
-    }
-
-  return {
-    title: listName,
-    notes: 'Congrats for sharing your list with people! 🥳',
-  }
-}
 
 type Keys = 'taskId' | 'start' | 'end'
 
@@ -63,7 +51,8 @@ export const action: ActionFunction = async ({request, params}) => {
   }
 
   const path = params['name']
-
+  const m = new URLSearchParams(request.url)
+  console.log(params, m)
   if (!path) {
     toBeReturned.errors['message'] = 'ListName is undefined'
     return redirect('..', {
@@ -123,35 +112,38 @@ export default function AddReminder() {
     useLoaderData<{taskId: string; taskIndex: number}>()
   const cancelRef = React.useRef(null)
   const fetcher = useFetcher()
-
+  const today = new Date()
+  // 2017-06-01T08:30">
+  const minStr = `${today.getFullYear()}-${today.getMonth()}-${today.getDay()}T${today.getHours()}-${today.getMinutes()}`
+  const [minDate, setMinDate] = React.useState(minStr)
   return (
-    <AlertDialogOverlay
-      style={{background: 'hsla(0, 50%, 50%, 0.85)'}}
-      leastDestructiveRef={cancelRef}
-    >
-      <AlertDialogContent style={{background: '#f0f0f0'}}>
-        <Link aria-label="Delete something" to="/add-reminder">
-          <Bell />
-        </Link>
+    <AlertDialogOverlay leastDestructiveRef={cancelRef}>
+      <AlertDialogContent>
         <fetcher.Form method="put">
           <AlertDialogLabel>Please Confirm!</AlertDialogLabel>
           <AlertDialogDescription>
-            Blah Blah Blaaaaaaaaaaaaa!
             <input type="hidden" name="taskId" value={taskId} />
             <input type="hidden" name="index" value={taskIndex} />
             <label htmlFor="reminder-start">
               From
               <input
-                min={new Date().toLocaleTimeString()}
+                min={minStr}
+                aria-min={minStr}
                 type="datetime-local"
                 name="start"
+                value={minDate}
+                onChange={e => {
+                  console.log(e.target.value)
+                  setMinDate(e.target.value)
+                }}
                 id="reminder-start"
               />
             </label>
             <label htmlFor="reminder-end">
               To
               <input
-                min={new Date().toLocaleTimeString()}
+                min={minDate}
+                aria-min={minDate}
                 type="datetime-local"
                 name="end"
                 id="reminder-end"
