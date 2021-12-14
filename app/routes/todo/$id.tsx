@@ -15,7 +15,7 @@ import Task, {CreateTask} from '~/components/task'
 import {SkinAside, SkinCore, SkinMain} from '~/components/skin'
 import {AddReminder, ReminderDisplay} from '~/components/reminder'
 import type {LoaderFunction, MetaFunction} from 'remix'
-import type {TaskType, ObjectOfStrings} from '~/types'
+import type {TaskType, ObjectOfStrings, TodoIdRouteLoaderData} from '~/types'
 
 import taskStyles from '~/styles/tasks.css'
 
@@ -27,7 +27,7 @@ export const links: LinksFunction = () => [
 ]
 
 export const meta: MetaFunction = ({params}) => {
-  const listName = params['name']
+  const listName = params['id']
   if (!listName)
     return {
       title: 'Invalid ListName!',
@@ -62,42 +62,26 @@ export const action: ActionFunction = async ({request, params}) => {
     },
   }
 
-  const path = params['name']
+  const listId = params['id']
 
-  if (!path) {
+  if (!listId) {
     toBeReturned.errors['message'] = 'ListName is undefined'
     return json(toBeReturned)
   }
-  const listName = decodeURIComponent(path)
 
-  const listData: TaskType = session.get(listName)
+  const listData: TaskType = session.get(listId)
 
   switch (request.method.toLocaleLowerCase()) {
     case 'put': {
       toBeReturned.formData.isDone = formData.get('isDone')?.toString() ?? ''
       toBeReturned.formData.notes = formData.get('notes')?.toString() ?? ''
       toBeReturned.formData.taskId = formData.get('taskId')?.toString() ?? ''
-      toBeReturned.formData.start = formData.get('start')?.toString() ?? ''
-      toBeReturned.formData.end = formData.get('end')?.toString() ?? ''
 
       if (!toBeReturned.formData.taskId) throw new Error('must provide ID')
 
       const index = listData.tasks.findIndex(
         task => task.id === toBeReturned.formData.taskId,
       )
-      if (toBeReturned.formData.end) {
-        console.log(
-          toBeReturned.formData.taskId,
-          toBeReturned.formData.start,
-          toBeReturned.formData.end,
-        )
-        // listData.reminders.push({
-        //   taskId: toBeReturned.formData.taskId,
-        //   start: toBeReturned.formData.start,
-        //   end: toBeReturned.formData.end,
-        // })
-        break
-      }
       if (toBeReturned.formData.notes.length === 0) {
         listData.tasks[index].isDone =
           toBeReturned.formData.isDone === 'true' ? true : false
@@ -132,7 +116,7 @@ export const action: ActionFunction = async ({request, params}) => {
     return json(toBeReturned)
   }
 
-  session.set(listName, listData)
+  session.set(listId, listData)
 
   return json(toBeReturned, {
     headers: {
@@ -143,9 +127,9 @@ export const action: ActionFunction = async ({request, params}) => {
 
 export const loader: LoaderFunction = async ({request, params}) => {
   const session = await getSession(request.headers.get('Cookie'))
-  const path = params['name']
+  const listId = params['id']
 
-  if (!path) {
+  if (!listId) {
     return json(
       {message: 'List Name Is inValid'},
       {
@@ -154,9 +138,7 @@ export const loader: LoaderFunction = async ({request, params}) => {
     )
   }
 
-  const listName = decodeURIComponent(path)
-
-  const listData = session.get(listName)
+  const listData = session.get(listId)
 
   if (!listData) {
     return json(
@@ -168,14 +150,13 @@ export const loader: LoaderFunction = async ({request, params}) => {
   }
   return json({
     message: '',
-    listName,
-    listData: listData,
+    listId,
+    listData,
   })
 }
 
 export default function Todo() {
-  const {listData, message, listName} =
-    useLoaderData<{message: string; listName: string; listData: TaskType}>()
+  const {listData, message, listId} = useLoaderData<TodoIdRouteLoaderData>()
   const fetcher = useFetcher()
   const [isAllChecked, setIsAllChecked] = React.useState<boolean | 'mixed'>(
     () => {
@@ -226,7 +207,7 @@ export default function Todo() {
                         fetcher.submit(
                           {tasks: `true`},
                           {
-                            action: `/todo/check-all?path=${listName}`,
+                            action: `/todo/check-all?id=${listId}`,
                             method: 'put',
                           },
                         )
@@ -236,7 +217,7 @@ export default function Todo() {
                       fetcher.submit(
                         {tasks: `${!isAllChecked}`},
                         {
-                          action: `/todo/check-all?path=${listName}`,
+                          action: `/todo/check-all?id=${listId}`,
                           method: 'put',
                         },
                       )

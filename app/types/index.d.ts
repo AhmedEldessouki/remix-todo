@@ -1,14 +1,27 @@
-type Lists = Array<{name: string; url: string; id: string}>
+type Lists = Array<{name: string; id: string}>
 
-type TaskData = {name: string; isDone: boolean; id: string; notes: string}
+type TasksData = {name: string; isDone: boolean; id: string; notes: string}
 
 type TaskReminder = {id: string; taskId: string; start: number; end: number}
 
 type TaskType = {
-  tasks: Array<TaskData>
+  tasks: Array<TasksData>
   reminders: Array<TaskReminder>
 }
 
-type ObjectOfStrings = {[key: string]: string}
+type ObjectOfStrings = Record<string, string>
 
-export {Lists, TaskType, TaskData, TaskReminder, ObjectOfStrings}
+type TodoIdRouteLoaderData = {
+  message: string
+  listId: string
+  listData: TaskType
+}
+
+export {
+  Lists,
+  TaskType,
+  TasksData as TaskData,
+  TaskReminder,
+  ObjectOfStrings,
+  TodoIdRouteLoaderData,
+}

@@ -1,6 +1,6 @@
 import type {Lists} from '~/types'
 
-const hasListName = (lists: Lists, listName: string): boolean =>
-  lists?.findIndex(listItem => listItem.name === listName) > -1
+const hasList = (lists: Lists, listId: string): boolean =>
+  lists?.findIndex(listItem => listItem.id === listId) > -1
 
-export {hasListName}
+export {hasList}

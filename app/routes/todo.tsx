@@ -22,9 +22,9 @@ export default function Todo() {
           <li>
             <NavLink to="new">Create New List</NavLink>
           </li>
-          {lists.map(({name, url, id}) => (
+          {lists.map(({name, id}) => (
             <li key={id}>
-              <NavLink to={url}>{name}</NavLink>
+              <NavLink to={id}>{name}</NavLink>
             </li>
           ))}
         </ul>

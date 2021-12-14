@@ -1,15 +1,16 @@
-import {json, redirect} from 'remix'
+import {json} from 'remix'
 import {commitSession, getSession} from '~/sessions.server'
-import type {ActionFunction, LoaderFunction} from 'remix'
+import type {ActionFunction} from 'remix'
 import type {TaskType} from '~/types'
 
-export const action: ActionFunction = async ({request}) => {
+export const action: ActionFunction = async ({request, params}) => {
   const session = await getSession(request.headers.get('Cookie'))
   const formData = await request.formData()
   let isChecked = formData.get('tasks')
 
-  const listName = new URL(request.url).searchParams.get('path')
-  if (!listName) {
+  const listId = new URL(request.url).searchParams.get('id')
+  console.log(params, listId, new URLSearchParams(request.url))
+  if (!listId) {
     return json(
       {message: 'List Name Is inValid'},
       {
@@ -19,7 +20,7 @@ export const action: ActionFunction = async ({request}) => {
   }
   if (isChecked === null) return json({message: 'Form/Tasks was null'})
 
-  const listData: TaskType = session.get(listName.toString())
+  const listData: TaskType = session.get(listId.toString())
 
   if (!listData) {
     return json(
@@ -38,7 +39,7 @@ export const action: ActionFunction = async ({request}) => {
     reminders: listData.reminders,
   }
 
-  session.set(listName, newListData)
+  session.set(listId, newListData)
 
   return json(newListData, {
     headers: {

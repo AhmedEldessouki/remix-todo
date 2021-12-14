@@ -1,11 +1,11 @@
 import React from 'react'
-import {Form, json, useFetcher, redirect} from 'remix'
+import {Form, json, redirect} from 'remix'
+import {v4} from 'uuid'
 import {commitSession, getSession} from '~/sessions.server'
+import Input from '~/components/input'
+import {hasList} from '~/utils'
 import type {ActionFunction, MetaFunction} from 'remix'
 import type {TaskType, Lists, ObjectOfStrings} from '~/types'
-import Input from '~/components/input'
-import {v4} from 'uuid'
-import {hasListName} from '~/utils'
 
 export const meta: MetaFunction = () => {
   return {
@@ -29,7 +29,7 @@ export const action: ActionFunction = async ({request}) => {
     return json(errors, {status: 422})
   }
 
-  if (hasListName(lists, listName)) {
+  if (hasList(lists, listName)) {
     errors['listName'] = 'Already exists!'
     return json(errors, {status: 409})
   }
@@ -39,7 +39,7 @@ export const action: ActionFunction = async ({request}) => {
     return json(errors, {status: 422})
   }
 
-  const newList = {name: listName, id: v4(), url: encodeURIComponent(listName)}
+  const newList = {name: listName, id: v4()}
 
   if (!Array.isArray(lists)) {
     lists = [newList]
@@ -47,12 +47,12 @@ export const action: ActionFunction = async ({request}) => {
     lists = [...lists, newList]
   }
 
-  const someId = v4()
+  const firstTaskId = v4()
 
   const defaultList: TaskType = {
     tasks: [
       {
-        id: someId,
+        id: firstTaskId,
         name: 'task',
         isDone: false,
         notes:
@@ -68,7 +68,7 @@ export const action: ActionFunction = async ({request}) => {
     ],
     reminders: [
       {
-        taskId: someId,
+        taskId: firstTaskId,
         id: v4(),
         start: Date.now() + 300000,
         end: Date.now() + 31000000,
@@ -77,9 +77,9 @@ export const action: ActionFunction = async ({request}) => {
   }
 
   session.set('lists', lists)
-  session.set(listName, defaultList)
+  session.set(newList.id, defaultList)
 
-  return redirect(`/todo/${newList.url}`, {
+  return redirect(`/todo/${newList.id}`, {
     headers: {
       'Set-Cookie': await commitSession(session),
     },
@@ -87,17 +87,6 @@ export const action: ActionFunction = async ({request}) => {
 }
 
 export default function New() {
-  const fetcher = useFetcher()
-
-  const loader = React.useCallback(() => {
-    fetcher.load('/todo')
-    console.log(fetcher.data)
-  }, [fetcher.data, fetcher.load])
-
-  React.useEffect(() => {
-    loader()
-  }, [])
-
   return (
     <section>
       <h2>Create List</h2>
