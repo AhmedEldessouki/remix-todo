@@ -11,12 +11,12 @@ import {
   useFetcher,
   useLoaderData,
   json,
-  useSearchParams,
+  useMatches,
 } from 'remix'
 import {v4} from 'uuid'
 import {commitSession, getSession} from '~/sessions.server'
 import type {ActionFunction, LoaderFunction, LinksFunction} from 'remix'
-import type {ObjectOfStrings, TaskType} from '~/types'
+import type {ObjectOfStrings, TaskType, TodoIdRouteLoaderData} from '~/types'
 
 import addReminderStyles from '~/styles/add-reminder.css'
 
@@ -50,25 +50,22 @@ export const action: ActionFunction = async ({request, params}) => {
     },
   }
 
-  const path = params['name']
-  const m = new URLSearchParams(request.url)
-  console.log(params, m)
-  if (!path) {
+  const listId = params['id']
+
+  if (!listId) {
     toBeReturned.errors['message'] = 'ListName is undefined'
-    return redirect('..', {
+    return redirect(`/todo/${listId}`, {
       status: 404,
       statusText: 'Task Id is missing.',
     })
   }
-  const listName = decodeURIComponent(path)
 
-  const listData: TaskType = session.get(listName)
+  const listData: TaskType = session.get(listId)
 
   toBeReturned.formData.taskId = formData.get('taskId')?.toString() ?? ''
-  toBeReturned.formData.start = formData.get('start')?.toString() ?? ''
+  toBeReturned.formData.start =
+    formData.get('start')?.toString() ?? new Date().toISOString()
   toBeReturned.formData.end = formData.get('end')?.toString() ?? ''
-
-  if (!toBeReturned.formData.taskId) throw new Error('must provide ID')
 
   const index = listData.tasks.findIndex(
     task => task.id === toBeReturned.formData.taskId,
@@ -79,57 +76,78 @@ export const action: ActionFunction = async ({request, params}) => {
     toBeReturned.formData.end,
     v4(),
   )
-  // listData.reminders.push({
-  //   taskId: toBeReturned.formData.taskId,
-  //   start: toBeReturned.formData.start,
-  //   end: toBeReturned.formData.end,
-  //   id: v4(),
-  // })
+  listData.reminders.push({
+    taskId: toBeReturned.formData.taskId,
+    start: new Date(toBeReturned.formData.start).getTime(),
+    end: new Date(toBeReturned.formData.end).getTime(),
+    id: v4(),
+  })
 
   if (Object.values(toBeReturned.errors).length > 0) {
-    return redirect('..', {
+    return redirect(`/todo/${listId}`, {
       status: 404,
       statusText: JSON.stringify(toBeReturned.errors, null, 2),
     })
   }
 
-  session.set(listName, listData)
+  session.set(listId, listData)
 
-  return redirect('..', {
+  return redirect(`/todo/${listId}`, {
     headers: {
       'Set-Cookie': await commitSession(session),
     },
   })
 }
 
-export const loader: LoaderFunction = ({params}) => {
-  console.log(params)
-  return json(params)
+export const loader: LoaderFunction = async ({params, request}) => {
+  console.log(params, request.url)
+  const listId = params['id']
+  const session = await getSession(request.headers.get('Cookie'))
+
+  if (!listId) {
+    return json({errorMessage: `listId was not found!`})
+  }
+
+  const list = session.get(listId)
+  return json({
+    taskId: new URLSearchParams(request.url).get('task-id'),
+  })
 }
 
 export default function AddReminder() {
-  const {taskId, taskIndex} =
-    useLoaderData<{taskId: string; taskIndex: number}>()
+  const {taskId} = useLoaderData<{taskId: string; taskIndex: number}>()
+  const [, , listData] = useMatches()
+  console.log(listData)
   const cancelRef = React.useRef(null)
   const fetcher = useFetcher()
   const today = new Date()
-  // 2017-06-01T08:30">
+  // ? Input Date Syntax "2017-06-01T08:30"
   const minStr = `${today.getFullYear()}-${today.getMonth()}-${today.getDay()}T${today.getHours()}-${today.getMinutes()}`
   const [minDate, setMinDate] = React.useState(minStr)
+  const taskRemindersCount = (
+    listData.data as TodoIdRouteLoaderData
+  ).listData.reminders.filter(reminder => reminder.taskId === taskId).length
+
+  if (taskRemindersCount > 1) {
+    // ! TODO: Maybe a message tell the user's
+    // ! how many reminders he/she has related
+    // ! to that Task. Ask if they want to Edit
+    // ! Or Add a new one (This Doesn't make sense Really)
+  }
+
   return (
     <AlertDialogOverlay leastDestructiveRef={cancelRef}>
       <AlertDialogContent>
-        <fetcher.Form method="put">
-          <AlertDialogLabel>Please Confirm!</AlertDialogLabel>
+        <fetcher.Form method="post">
+          <AlertDialogLabel>Create Reminder</AlertDialogLabel>
           <AlertDialogDescription>
             <input type="hidden" name="taskId" value={taskId} />
-            <input type="hidden" name="index" value={taskIndex} />
             <label htmlFor="reminder-start">
               From
               <input
                 min={minStr}
                 aria-min={minStr}
-                type="datetime-local"
+                type="date"
                 name="start"
                 value={minDate}
                 onChange={e => {
@@ -142,8 +160,8 @@ export default function AddReminder() {
             <label htmlFor="reminder-end">
               To
               <input
-                min={minDate}
-                aria-min={minDate}
+                min={`${minDate}T00:00:00Z`}
+                aria-min={`${minDate}T00:00:00Z`}
                 type="datetime-local"
                 name="end"
                 id="reminder-end"
@@ -152,7 +170,9 @@ export default function AddReminder() {
             </label>
           </AlertDialogDescription>
           <div className="alert-buttons">
-            <button type="submit">Add Reminder</button>
+            <button type="submit" className="btn-link-alike">
+              Add Reminder
+            </button>
             <Link ref={cancelRef} to="..">
               Nevermind
             </Link>
