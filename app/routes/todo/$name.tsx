@@ -213,7 +213,6 @@ export default function Todo() {
         <>
           <Outlet />
           <SkinCore>
-            <Link to="add-reminder">add-reminder</Link>
             <SkinMain>
               <h2>ToDO</h2>
               <fieldset>
