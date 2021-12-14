@@ -120,20 +120,23 @@ export default function AddReminder() {
   console.log(listData)
   const cancelRef = React.useRef(null)
   const fetcher = useFetcher()
-  const today = new Date()
+
+  const today = new Date().toISOString()
   // ? Input Date Syntax "2017-06-01T08:30"
-  const minStr = `${today.getFullYear()}-${today.getMonth()}-${today.getDay()}T${today.getHours()}-${today.getMinutes()}`
-  const [minDate, setMinDate] = React.useState(minStr)
+  const [start, setStart] = React.useState(
+    new Date().toISOString().substring(0, 16),
+  )
+  const [end, setEnd] = React.useState(start)
   const taskRemindersCount = (
     listData.data as TodoIdRouteLoaderData
   ).listData.reminders.filter(reminder => reminder.taskId === taskId).length
 
-  if (taskRemindersCount > 1) {
-    // ! TODO: Maybe a message tell the user's
-    // ! how many reminders he/she has related
-    // ! to that Task. Ask if they want to Edit
-    // ! Or Add a new one (This Doesn't make sense Really)
-  }
+  // if (taskRemindersCount > 1) {
+  // ! TODO: Maybe a message tell the user's
+  // ! how many reminders he/she has related
+  // ! to that Task. Ask if they want to Edit
+  // ! Or Add a new one (This Doesn't make sense Really)
+  // }
 
   return (
     <AlertDialogOverlay leastDestructiveRef={cancelRef}>
@@ -145,14 +148,26 @@ export default function AddReminder() {
             <label htmlFor="reminder-start">
               From
               <input
-                min={minStr}
-                aria-min={minStr}
+                min={new Date().toISOString().substring(0, 16)}
                 type="datetime-local"
                 name="start"
-                value={minDate}
+                value={start}
+                onBlur={() => {
+                  if (
+                    new Date(start).getFullYear() < new Date(end).getFullYear()
+                  )
+                    return
+                  if (new Date(start).getMonth() < new Date(end).getMonth())
+                    return
+                  if (new Date(start).getDay() < new Date(end).getDay()) return
+                  if (new Date(start).getHours() < new Date(end).getHours())
+                    return
+                  if (new Date(start).getMinutes() < new Date(end).getMinutes())
+                    return
+                  setEnd(start)
+                }}
                 onChange={e => {
-                  console.log(e)
-                  setMinDate(e.target.value)
+                  setStart(e.target.value)
                 }}
                 id="reminder-start"
               />
@@ -160,10 +175,15 @@ export default function AddReminder() {
             <label htmlFor="reminder-end">
               To
               <input
-                min={minDate}
+                min={start}
                 type="datetime-local"
                 name="end"
                 id="reminder-end"
+                value={end}
+                onChange={e => {
+                  console.log(e)
+                  setEnd(e.target.value)
+                }}
                 required
               />
             </label>
