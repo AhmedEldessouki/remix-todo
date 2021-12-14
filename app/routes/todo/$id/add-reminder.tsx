@@ -147,11 +147,11 @@ export default function AddReminder() {
               <input
                 min={minStr}
                 aria-min={minStr}
-                type="date"
+                type="datetime-local"
                 name="start"
                 value={minDate}
                 onChange={e => {
-                  console.log(e.target.value)
+                  console.log(e)
                   setMinDate(e.target.value)
                 }}
                 id="reminder-start"
@@ -160,8 +160,7 @@ export default function AddReminder() {
             <label htmlFor="reminder-end">
               To
               <input
-                min={`${minDate}T00:00:00Z`}
-                aria-min={`${minDate}T00:00:00Z`}
+                min={minDate}
                 type="datetime-local"
                 name="end"
                 id="reminder-end"
