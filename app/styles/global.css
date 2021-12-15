@@ -3,13 +3,22 @@
  * quick baseline!
  */
 :root {
-  --color-foreground: hsl(0, 0%, 7%);
-  --color-background: hsl(0, 0%, 100%);
+  --color-foreground: hsl(252, 7%, 14%);
+  --color-background: hsl(0, 0%, 93%);
+  --color-background-shadow: hsl(0, 0%, 50%, 0.2);
+  --color-background-gradient: linear-gradient(
+    to top,
+    #accbee 0%,
+    #e7f0fd 100%
+  );
   --color-links: hsl(213, 100%, 52%);
   --color-links-hover: hsl(213, 100%, 43%);
-  --color-border: hsl(0, 0%, 82%);
-  --font-body: -apple-system, "Segoe UI", Helvetica Neue, Helvetica, Roboto,
-    Arial, sans-serif, system-ui, "Apple Color Emoji", "Segoe UI Emoji";
+  --color-border: hsl(181, 100%, 41%);
+  --color-red: #bd0817;
+  --color-green: #1bff62;
+  --rounded: 0.7rem;
+  --font-body: -apple-system, 'Segoe UI', Helvetica Neue, Helvetica, Roboto,
+    Arial, sans-serif, system-ui, 'Apple Color Emoji', 'Segoe UI Emoji';
 }
 
 html {
@@ -52,6 +61,20 @@ a {
 a:hover {
   color: var(--color-links-hover);
   text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+button {
+  font-weight: bold;
+  padding: 1rem 2.8rem;
+  font-size: 1rem;
+  color: currentColor;
+  background: inherit;
+  border-radius: var(--rounded);
+  border-color: var(--color-border);
+  letter-spacing: 0.03rem;
+  margin: 0.8em 0;
+  cursor: pointer;
 }
 
 hr {
@@ -63,8 +86,15 @@ hr {
   margin-bottom: 2rem;
 }
 
-input:where([type="text"]),
-input:where([type="search"]) {
+ul,
+ol,
+li {
+  list-style: none;
+}
+
+textarea,
+input:where([type='text']),
+input:where([type='search']) {
   display: block;
   border: 1px solid var(--color-border);
   width: 100%;
@@ -73,8 +103,23 @@ input:where([type="search"]) {
   height: calc(1ch + 1.5em);
   padding-right: 0.5em;
   padding-left: 0.5em;
+  margin: 0.5em 0;
   background-color: hsl(0 0% 100% / 20%);
   color: var(--color-foreground);
+  border-radius: 0.2em;
+}
+
+pre {
+  background: var(--color-background-shadow);
+  margin-left: 1ch;
+
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+  padding: 2ch 3ch;
+  border-left: 0.5ch solid var(--color-border);
 }
 
 .sr-only {
@@ -120,22 +165,10 @@ input:where([type="search"]) {
   align-items: center;
 }
 
-.remix-app__header-home-link {
-  width: 106px;
-  height: 30px;
-  color: var(--color-foreground);
-}
-
-.remix-app__header-nav ul {
-  list-style: none;
-  margin: 0;
+.remix-app__header-content div {
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 1.5em;
-}
-
-.remix-app__header-nav li {
-  font-weight: bold;
 }
 
 .remix-app__main {
@@ -150,7 +183,7 @@ input:where([type="search"]) {
 
 .remix-app__footer-content {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -160,8 +193,8 @@ input:where([type="search"]) {
   display: grid;
   grid-auto-rows: min-content;
   gap: var(--gap);
-  padding-top: var(--space);
-  padding-bottom: var(--space);
+  margin-top: var(--space);
+  margin-bottom: var(--space);
 }
 
 @media print, screen and (min-width: 640px) {
@@ -190,15 +223,32 @@ input:where([type="search"]) {
   margin: 0;
   padding: 1.5ch 2ch;
   border: solid 1px var(--color-border);
-  border-radius: 0.5rem;
+  border-radius: var(--rounded);
+  max-width: 400px;
+}
+
+.remix__page > aside > hr {
+  margin: 0 0.93ch;
 }
 
 .remix__page > aside > :first-child {
   margin-top: 0;
+  margin-bottom: 0.93ch;
+  text-align: center;
 }
 
 .remix__page > aside > :last-child {
   margin-bottom: 0;
+}
+
+@media print, screen and (max-width: 1024px) {
+  .remix__page > aside {
+    margin-top: var(--gap);
+    max-width: unset;
+  }
+}
+
+.remix__page__reminder {
 }
 
 .remix__form {
@@ -207,10 +257,38 @@ input:where([type="search"]) {
   gap: 1rem;
   padding: 1rem;
   border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
+  border-radius: var(--rounded);
 }
 
 .remix__form > * {
   margin-top: 0;
   margin-bottom: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-foreground: hsl(216, 4.1%, 75.9%);
+    --color-background: hsl(252, 7%, 14%);
+    --color-background-secondary: #282a37;
+    --color-background-shadow: #3437484f;
+    --color-background-gradient: linear-gradient(
+      135deg,
+      #181052,
+      #1e1255,
+      #241558,
+      #2b175b,
+      #311a5d,
+      #381d60,
+      #3e2062,
+      #452464,
+      #4b2766,
+      #512a68,
+      #572e69,
+      #5c326b
+    );
+    --color-links: hsl(213, 100%, 73%);
+    --color-links-hover: hsl(213, 100%, 80%);
+    --color-red: #bd0817;
+    --color-green: #1bff62;
+  }
 }
