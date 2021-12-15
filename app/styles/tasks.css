@@ -24,6 +24,27 @@ svg {
   width: 30px;
 }
 
+.btn-link-alike {
+  margin: 0;
+  padding: 0;
+  border: none;
+  font-size: inherit;
+  font-weight: inherit;
+  color: var(--color-links);
+}
+
+.btn-link-alike:hover {
+  color: var(--color-links-hover);
+  text-underline-offset: 3px;
+  text-decoration: underline;
+}
+
+.alert-buttons {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
 .task-root__container {
   --m-tb: 0.9em;
   border-radius: var(--rounded);
@@ -97,6 +118,11 @@ svg {
   text-transform: capitalize;
 }
 
+.warning {
+  margin: none;
+  color: var(--color-red);
+}
+
 [data-reach-disclosure-button] {
   padding: 0.5rem 0.6rem;
   justify-self: center;
@@ -117,6 +143,30 @@ svg {
   opacity: 0;
   overflow: hidden;
   height: 0;
+}
+
+[data-reach-alert-dialog-overlay] {
+  background: #343748af none repeat scroll 0% 0%;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+[data-reach-alert-dialog-description] {
+  display: flex;
+  flex-direction: column;
+  padding: 15px 7px;
+}
+
+[data-reach-dialog-content] {
+  background: var(--color-background) none repeat scroll 0% 0%;
+  width: 300px;
+  border-radius: var(--rounded);
+  padding: 1em 2em;
 }
 
 @keyframes slide-down {
