@@ -100,7 +100,22 @@ function Document({
         {children}
         <ScrollRestoration />
         <Scripts />
-        <LiveReload />
+        {process.env.NODE_ENV === 'development' && <LiveReload />}
+        {process.env.NODE_ENV === 'development' && (
+          <p
+            style={{
+              position: 'fixed',
+              bottom: 0,
+              width: '100%',
+              background: 'var(--color-background-gradient)',
+              padding: `10px`,
+              margin: `0`,
+              textAlign: `center`,
+            }}
+          >
+            Running In Development
+          </p>
+        )}
       </body>
     </html>
   )

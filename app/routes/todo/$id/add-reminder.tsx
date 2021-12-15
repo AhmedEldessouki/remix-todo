@@ -167,6 +167,36 @@ export default function AddReminder() {
                   setEnd(start)
                 }}
                 onChange={e => {
+                  console.log(e)
+                  if (
+                    new Date(today).getFullYear() >
+                    new Date(e.target.value).getFullYear()
+                  )
+                    return
+                  console.log(`today.getFullYear()`, today, e.target.value)
+                  if (
+                    new Date(today).getMonth() >
+                    new Date(e.target.value).getMonth()
+                  )
+                    return
+                  console.log(`today.getMonth()`, today, e.target.value)
+                  if (
+                    new Date(today).getDay() > new Date(e.target.value).getDay()
+                  )
+                    return
+                  console.log(`today.getDay()`, today, e.target.value)
+                  if (
+                    new Date(today).getUTCHours() >
+                    new Date(e.target.value).getUTCHours()
+                  )
+                    return
+                  console.log(`today.getHours()`, today, e.target.value)
+                  if (
+                    new Date(today).getMinutes() >
+                    new Date(e.target.value).getMinutes()
+                  )
+                    return
+                  console.log(`today.getMinutes()`, today, e.target.value)
                   setStart(e.target.value)
                 }}
                 id="reminder-start"
