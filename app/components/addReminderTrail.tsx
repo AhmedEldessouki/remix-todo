@@ -17,18 +17,12 @@ const getTodayDate = () => {
     .substring(0, 16)
     .replace(/[\/]/g, '-')
 
-  let sub = date.substring(0, 10)
-
-  // ? from 12-15-2021T17:31
-  // *      0123456789
-  // ? to   2021-12-15T15:16:25.206Z
-
   return (
-    sub.substring(6, 10) +
+    date.substring(6, 10) +
     '-' +
-    sub.substring(0, 2) +
+    date.substring(0, 2) +
     '-' +
-    sub.substring(3, 5) +
+    date.substring(3, 5) +
     date.substring(10, 16)
   )
 }
