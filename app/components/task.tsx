@@ -87,7 +87,6 @@ function TaskNotes({
 
 function CreateTask() {
   const [isOpen, setIsOpen] = React.useState(false)
-  const {current: id} = React.useRef(v4())
   const fetcher = useFetcher()
   return (
     <TaskRoot isOpen={isOpen} isDone={false} className="task-form">
@@ -95,7 +94,7 @@ function CreateTask() {
         <TaskHeader
           isDone={false}
           isOpen={isOpen}
-          id={id}
+          id="no-id"
           handleDisclosure={() => setIsOpen(state => !state)}
           disableCheck
         >
