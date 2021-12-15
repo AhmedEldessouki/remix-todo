@@ -9,12 +9,26 @@ type TaskType = {
   reminders: Array<TaskReminder>
 }
 
-type ObjectOfStrings = Record<string, string>
-
 type TodoIdRouteLoaderData = {
   message: string
   listId: string
   listData: TaskType
+}
+
+type Inputs = {
+  isDone?: string
+  notes?: string
+  name?: string
+  taskId?: string
+  id?: string
+  start?: string
+  end?: string
+  message?: string
+}
+
+type ActionReturnable = {
+  errors: Inputs
+  formData: Inputs
 }
 
 export {
@@ -22,6 +36,6 @@ export {
   TaskType,
   TasksData as TaskData,
   TaskReminder,
-  ObjectOfStrings,
   TodoIdRouteLoaderData,
+  ActionReturnable,
 }
