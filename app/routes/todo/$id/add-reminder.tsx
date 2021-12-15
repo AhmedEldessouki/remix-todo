@@ -153,47 +153,15 @@ export default function AddReminder() {
                 name="start"
                 value={start}
                 onBlur={() => {
-                  if (
-                    new Date(start).getFullYear() < new Date(end).getFullYear()
-                  )
-                    return
-                  if (new Date(start).getMonth() < new Date(end).getMonth())
-                    return
-                  if (new Date(start).getDay() < new Date(end).getDay()) return
-                  if (new Date(start).getHours() < new Date(end).getHours())
-                    return
-                  if (new Date(start).getMinutes() < new Date(end).getMinutes())
+                  if (new Date(start).getTime() < new Date(end).getTime())
                     return
                   setEnd(start)
                 }}
                 onChange={e => {
                   console.log(e)
                   if (
-                    new Date(today).getFullYear() >
-                    new Date(e.target.value).getFullYear()
-                  )
-                    return
-                  console.log(`today.getFullYear()`, today, e.target.value)
-                  if (
-                    new Date(today).getMonth() >
-                    new Date(e.target.value).getMonth()
-                  )
-                    return
-                  console.log(`today.getMonth()`, today, e.target.value)
-                  if (
-                    new Date(today).getDay() > new Date(e.target.value).getDay()
-                  )
-                    return
-                  console.log(`today.getDay()`, today, e.target.value)
-                  if (
-                    new Date(today).getUTCHours() >
-                    new Date(e.target.value).getUTCHours()
-                  )
-                    return
-                  console.log(`today.getHours()`, today, e.target.value)
-                  if (
-                    new Date(today).getMinutes() >
-                    new Date(e.target.value).getMinutes()
+                    new Date(today).getTime() >
+                    new Date(e.target.value).getTime()
                   )
                     return
                   console.log(`today.getMinutes()`, today, e.target.value)
