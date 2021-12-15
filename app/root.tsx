@@ -11,9 +11,13 @@ import {
 import type {LinksFunction} from 'remix'
 
 import globalStylesUrl from '~/styles/global.css'
+import reachStylesUrl from '~/styles/reach.css'
 
 export let links: LinksFunction = () => {
-  return [{rel: 'stylesheet', href: globalStylesUrl}]
+  return [
+    {rel: 'stylesheet', href: globalStylesUrl},
+    {rel: 'stylesheet', href: reachStylesUrl},
+  ]
 }
 
 export default function App() {
