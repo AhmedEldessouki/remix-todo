@@ -9,10 +9,26 @@ type TimerType = {
   status: 'passed' | 'on-going'
 }
 
+const displayLeft = (timer: TimerType): string => {
+  if (timer.days > 0) {
+    return `${timer.days} days left`
+  }
+
+  if (timer.hours > 0) {
+    return `${timer.hours} days left`
+  }
+
+  if (timer.minutes > 0) {
+    return `${timer.minutes} days left`
+  }
+
+  return `${timer.seconds} days left`
+}
+
 const handleCountDown = (
   reminder: number,
   today: number | undefined = Date.now(),
-) => {
+): TimerType => {
   const left: TimerType = {
     days: 0,
     hours: 0,
@@ -53,20 +69,23 @@ function ReminderDisplay({
 
   return (
     <div className="reminder__container" key={id + taskId} itemID={id + taskId}>
-      <div className="reminder-text__container">
+      <div className="reminder-header__container">
         <span>{timer.status}</span>
         <span>{new Date(end).toLocaleDateString()}</span>
       </div>
-      <div className="count-down__container">
+      <div className="reminder-main__container">
         {Object.entries(timer).map(([key, value], i) => {
           if (typeof value === 'string') return null
           return (
-            <div className="count-down__sub-container" key={`${id}-${i}`}>
+            <div className="reminder-main__sub-container" key={`${id}-${i}`}>
               <p>{key}</p>
               <p className="numbers">{`${value}`.padStart(2, '0')}</p>
             </div>
           )
         })}
+      </div>
+      <div className="reminder-footer__container">
+        <span>{displayLeft(timer)}</span>
       </div>
     </div>
   )
