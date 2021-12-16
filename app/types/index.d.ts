@@ -13,6 +13,7 @@ type TodoIdRouteLoaderData = {
   message: string
   listId: string
   listData: TaskType
+  isAllChecked: boolean | 'mixed'
 }
 
 type Inputs = {

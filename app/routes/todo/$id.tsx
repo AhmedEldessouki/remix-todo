@@ -55,7 +55,12 @@ export const action: ActionFunction = async ({request, params}) => {
     return json(toBeReturned)
   }
 
-  const listData: TaskType = session.get(listId)
+  const listData: TaskType | undefined = session.get(listId)
+
+  if (!listData) {
+    toBeReturned.errors.message = 'List was not found!'
+    return json(toBeReturned)
+  }
 
   switch (request.method.toLocaleLowerCase()) {
     case 'put': {
@@ -71,6 +76,7 @@ export const action: ActionFunction = async ({request, params}) => {
       const index = listData.tasks.findIndex(
         task => task.id === toBeReturned.formData.taskId,
       )
+
       if (toBeReturned.formData.isDone) {
         listData.tasks[index].isDone =
           toBeReturned.formData.isDone === 'true' ? true : false
@@ -87,6 +93,7 @@ export const action: ActionFunction = async ({request, params}) => {
 
       break
     }
+
     case 'post': {
       toBeReturned.formData.name = formData.get('name')?.toString() ?? ''
       toBeReturned.formData.notes = formData.get('notes')?.toString() ?? ''
@@ -129,6 +136,7 @@ export const action: ActionFunction = async ({request, params}) => {
 export const loader: LoaderFunction = async ({request, params}) => {
   const session = await getSession(request.headers.get('Cookie'))
   const listId = params['id']
+  let isAllChecked: boolean | 'mixed' = false
 
   if (!listId) {
     return json(
@@ -139,7 +147,7 @@ export const loader: LoaderFunction = async ({request, params}) => {
     )
   }
 
-  const listData = session.get(listId)
+  const listData: TaskType | undefined = session.get(listId)
 
   if (!listData) {
     return json(
@@ -149,39 +157,29 @@ export const loader: LoaderFunction = async ({request, params}) => {
       },
     )
   }
+
+  const checkedLength = listData.tasks.filter(({isDone}) => isDone).length
+
+  if (checkedLength === listData.tasks.length) {
+    isAllChecked = true
+  } else if (checkedLength === 0) {
+    isAllChecked = false
+  } else {
+    isAllChecked = 'mixed'
+  }
+
   return json({
     message: '',
     listId,
     listData,
+    isAllChecked,
   })
 }
 
 export default function Todo() {
-  const {listData, message, listId} = useLoaderData<TodoIdRouteLoaderData>()
+  const {listData, message, listId, isAllChecked} =
+    useLoaderData<TodoIdRouteLoaderData>()
   const fetcher = useFetcher<ActionReturnable>()
-  const [isAllChecked, setIsAllChecked] = React.useState<boolean | 'mixed'>(
-    () => {
-      const checkedLength = listData.tasks.filter(({isDone}) => isDone).length
-
-      if (checkedLength === listData.tasks.length) return true
-      if (checkedLength === 0) return false
-      return 'mixed'
-    },
-  )
-
-  React.useEffect(() => {
-    const checkedLength = listData.tasks.filter(({isDone}) => isDone).length
-
-    if (checkedLength === listData.tasks.length) {
-      setIsAllChecked(true)
-      return
-    }
-    if (checkedLength === 0) {
-      setIsAllChecked(false)
-      return
-    }
-    setIsAllChecked('mixed')
-  }, [listData.tasks])
 
   return (
     <div>
@@ -203,7 +201,7 @@ export default function Todo() {
                     name="tasks"
                     checked={isAllChecked}
                     onChange={() => {
-                      if (typeof isAllChecked === 'string') {
+                      if (isAllChecked !== true) {
                         fetcher.submit(
                           {tasks: `true`},
                           {
@@ -211,7 +209,6 @@ export default function Todo() {
                             method: 'put',
                           },
                         )
-                        setIsAllChecked(true)
                         return
                       }
                       fetcher.submit(
@@ -221,15 +218,17 @@ export default function Todo() {
                           method: 'put',
                         },
                       )
-                      setIsAllChecked((state: any) => !state)
                     }}
                   />
-                  {true ? 'Unselect' : 'Select'} all condiments
+                  {isAllChecked === true ? 'Unselect' : 'Select'} all condiments
                 </label>
                 {/* // ! Handle checkBox error here */}
                 {fetcher.data?.errors && (
-                  <p className="warning">{JSON.stringify(fetcher, null, 2)}</p>
+                  <p className="warning">
+                    {JSON.stringify(fetcher.data.errors, null, 2)}
+                  </p>
                 )}
+
                 <fieldset style={{margin: '1rem 0 0', padding: '1rem 1.5rem'}}>
                   <legend>Tasks</legend>
                   <CreateTask />
