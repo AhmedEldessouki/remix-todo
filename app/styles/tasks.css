@@ -115,6 +115,7 @@ svg {
   border-radius: var(--rounded);
   margin: 13px;
   padding: 0.7em 0.5em;
+  height: 8.3em;
 }
 
 .reminder__container > div > span {
@@ -160,6 +161,27 @@ svg {
 .reminder-footer__container {
   display: flex;
   justify-content: end;
+}
+
+.passed__container {
+  height: 8.3em;
+}
+.passed {
+  background: #212224d4;
+  top: -146px;
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  height: 8.31em;
+}
+
+.passed > h1 {
+  font-size: 2.4rem;
+  font-variant: all-petite-caps;
+  font-style: italic;
 }
 
 .warning {

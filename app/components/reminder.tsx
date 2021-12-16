@@ -46,6 +46,39 @@ const handleCountDown = (
 }
 const testDeadLine = Date.now() + 1000000
 
+function ReminderSkin({
+  timer,
+  end,
+  id,
+}: {
+  timer: TimerType
+  end: number
+  id: string
+}) {
+  return (
+    <>
+      <div className="reminder-header__container">
+        <span>{timer.status}</span>
+        <span>{new Date(end).toLocaleDateString()}</span>
+      </div>
+      <div className="reminder-main__container">
+        {Object.entries(timer).map(([key, value], i) => {
+          if (typeof value === 'string') return null
+          return (
+            <div className="reminder-main__sub-container" key={`${id}-${i}`}>
+              <p>{key}</p>
+              <p className="numbers">{`${value}`.padStart(2, '0')}</p>
+            </div>
+          )
+        })}
+      </div>
+      <div className="reminder-footer__container">
+        <span>{displayLeft(timer)}</span>
+      </div>
+    </>
+  )
+}
+
 function ReminderDisplay({
   taskId,
   id,
@@ -67,26 +100,21 @@ function ReminderDisplay({
     return () => clearInterval()
   }, [handleCountDown])
 
+  if (timer.status === 'passed') {
+    return (
+      <div className="passed__container">
+        <div className="reminder__container">
+          <ReminderSkin timer={timer} end={end} id={id} />
+        </div>
+        <div className="reminder__container passed">
+          <h1>{timer.status}</h1>
+        </div>
+      </div>
+    )
+  }
   return (
     <div className="reminder__container" key={id + taskId} itemID={id + taskId}>
-      <div className="reminder-header__container">
-        <span>{timer.status}</span>
-        <span>{new Date(end).toLocaleDateString()}</span>
-      </div>
-      <div className="reminder-main__container">
-        {Object.entries(timer).map(([key, value], i) => {
-          if (typeof value === 'string') return null
-          return (
-            <div className="reminder-main__sub-container" key={`${id}-${i}`}>
-              <p>{key}</p>
-              <p className="numbers">{`${value}`.padStart(2, '0')}</p>
-            </div>
-          )
-        })}
-      </div>
-      <div className="reminder-footer__container">
-        <span>{displayLeft(timer)}</span>
-      </div>
+      <ReminderSkin timer={timer} end={end} id={id} />
     </div>
   )
 }
