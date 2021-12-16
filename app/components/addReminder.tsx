@@ -27,18 +27,16 @@ const getTodayDate = () => {
   )
 }
 
-export default function AddReminderTrail({taskId}: {taskId: string}) {
+export default function AddReminder({taskId}: {taskId: string}) {
   const cancelRef = React.useRef(null)
   const fetcher = useFetcher<ActionReturnable>()
   const match = useMatches()
   const {current: today} = React.useRef(getTodayDate())
-  // ? Input Date Syntax "2017-06-01T08:30"
   const [isOpen, setIsOpen] = React.useState(false)
   const [start, setStart] = React.useState(today)
   const [end, setEnd] = React.useState(start)
 
   React.useEffect(() => {
-    console.log(today)
     if (Date.now() > new Date(today).getTime()) {
       setStart(getTodayDate())
       setEnd(getTodayDate())

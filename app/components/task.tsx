@@ -7,7 +7,7 @@ import {v4} from 'uuid'
 import Input from './input'
 import {AddReminder} from './reminder'
 import Bell from './bell'
-import AddReminderTrail from './addReminderTrail'
+import AddReminder from './addReminder'
 
 function TaskRoot({
   children,
@@ -69,7 +69,7 @@ function TaskHeader({
           <VisuallyHidden>notes</VisuallyHidden>
         </DisclosureButton>
         {children}
-        <AddReminderTrail taskId={id} />
+        <AddReminder taskId={id} />
       </div>
     </>
   )
