@@ -1,13 +1,4 @@
-import {
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogLabel,
-  AlertDialogOverlay,
-} from '@reach/alert-dialog'
-import VisuallyHidden from '@reach/visually-hidden'
 import React from 'react'
-import {useFetcher} from 'remix'
-import Bell from './bell'
 
 interface LeftTime {
   days: number
@@ -41,56 +32,6 @@ const handleCountDown = (
 }
 const testDeadLine = Date.now() + 1000000
 
-function AddReminder({taskId}: {taskId: string}) {
-  const [showDialog, setShowDialog] = React.useState(false)
-  const cancelRef = React.useRef(null)
-  const fetcher = useFetcher()
-
-  const open = () => setShowDialog(!showDialog)
-  const close = () => setShowDialog(!showDialog)
-
-  if (!showDialog) {
-    return (
-      <button type="button" onClick={open}>
-        <Bell />
-        <VisuallyHidden>Delete something</VisuallyHidden>
-      </button>
-    )
-  }
-  return (
-    <AlertDialogOverlay
-      style={{background: 'hsla(0, 50%, 50%, 0.85)'}}
-      leastDestructiveRef={cancelRef}
-    >
-      <AlertDialogContent style={{background: '#f0f0f0'}}>
-        <fetcher.Form method="put">
-          <AlertDialogLabel>Please Confirm!</AlertDialogLabel>
-          <AlertDialogDescription>
-            Blah Blah Blaaaaaaaaaaaaa!
-            <label htmlFor="reminder-start">
-              From
-              <input type="datetime" name="start" id="reminder-start" />
-            </label>
-            <label htmlFor="reminder-end">
-              To
-              <input type="datetime" name="end" id="reminder-end" required />
-            </label>
-          </AlertDialogDescription>
-          <div className="alert-buttons">
-            <button>Yes, delete</button>
-            <button onClick={close} type="submit">
-              Add Reminder
-            </button>
-            <button ref={cancelRef} type="button" onClick={close}>
-              Nevermind
-            </button>
-          </div>
-        </fetcher.Form>
-      </AlertDialogContent>
-    </AlertDialogOverlay>
-  )
-}
-
 function ReminderDisplay({
   taskId,
   id,
@@ -121,4 +62,4 @@ function ReminderDisplay({
   )
 }
 
-export {ReminderDisplay, AddReminder}
+export default ReminderDisplay
