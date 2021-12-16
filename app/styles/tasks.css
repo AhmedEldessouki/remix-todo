@@ -7,8 +7,6 @@ fieldset {
   padding: 0;
   border: none;
 }
-fieldset:first-child {
-}
 
 textarea {
   height: calc(6ch + 1.5em);
@@ -166,6 +164,7 @@ svg {
 .passed__container {
   height: 8.3em;
 }
+
 .passed {
   background: #212224d4;
   top: -146px;
