@@ -108,14 +108,51 @@ svg {
 }
 
 .reminder__container {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0.5fr, 1fr));
-  grid-template-rows: repeat(2, 1fr);
-  align-items: center;
-  margin: 0.5em 0;
-  justify-items: center;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
   text-transform: capitalize;
+  background: var(--color-background-secondary);
+  border-radius: var(--rounded);
+  margin: 13px;
+  padding: 0.7em 0.5em;
+}
+
+.reminder-text__container {
+  display: flex;
+  justify-content: space-between;
+}
+.reminder-text__container > span {
+  margin: 0 1em;
+  color: var(--color-links);
+  font-style: italic;
+  letter-spacing: 0.04em;
+}
+
+.count-down__container {
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+  font-style: oblique;
+  margin: 0.5em 0;
+}
+
+.count-down__sub-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 47px;
+  font-size: 0.7rem;
+}
+
+.count-down__sub-container > p {
+  margin: 0;
+}
+
+.numbers {
+  font-size: 2rem;
+  font-style: normal;
+  line-height: 1;
 }
 
 .warning {
