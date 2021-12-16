@@ -288,7 +288,7 @@ pre {
     );
     --color-links: hsl(213, 100%, 73%);
     --color-links-hover: hsl(213, 100%, 80%);
-    --color-red: #bd0817;
+    --color-red: #f94655;
     --color-green: #1bff62;
   }
 }

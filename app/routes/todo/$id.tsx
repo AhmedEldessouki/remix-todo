@@ -5,7 +5,6 @@ import {
   json,
   useFetcher,
   ActionFunction,
-  Link,
   Outlet,
 } from 'remix'
 import {v4} from 'uuid'
@@ -13,9 +12,9 @@ import {MixedCheckbox} from '@reach/checkbox'
 import {commitSession, getSession} from '~/sessions.server'
 import Task, {CreateTask} from '~/components/task'
 import {SkinAside, SkinCore, SkinMain} from '~/components/skin'
-import {AddReminder, ReminderDisplay} from '~/components/reminder'
+import ReminderDisplay from '~/components/reminder'
 import type {LoaderFunction, MetaFunction} from 'remix'
-import type {TaskType, ObjectOfStrings, TodoIdRouteLoaderData} from '~/types'
+import type {TaskType, TodoIdRouteLoaderData, ActionReturnable} from '~/types'
 
 import taskStyles from '~/styles/tasks.css'
 
@@ -40,61 +39,70 @@ export const meta: MetaFunction = ({params}) => {
   }
 }
 
-type Keys = 'isDone' | 'notes' | 'name' | 'taskId' | 'id' | 'start' | 'end'
-
 export const action: ActionFunction = async ({request, params}) => {
   const session = await getSession(request.headers.get('Cookie'))
   const formData = await request.formData()
 
-  const toBeReturned: {
-    errors: ObjectOfStrings
-    formData: Record<Keys, string | null>
-  } = {
+  const toBeReturned: ActionReturnable = {
     errors: {},
-    formData: {
-      isDone: null,
-      notes: null,
-      name: null,
-      taskId: null,
-      id: null,
-      start: null,
-      end: null,
-    },
+    formData: {},
   }
 
   const listId = params['id']
 
   if (!listId) {
-    toBeReturned.errors['message'] = 'ListName is undefined'
+    toBeReturned.errors.message = 'ListName is undefined'
     return json(toBeReturned)
   }
 
-  const listData: TaskType = session.get(listId)
+  const listData: TaskType | undefined = session.get(listId)
+
+  if (!listData) {
+    toBeReturned.errors.message = 'List was not found!'
+    return json(toBeReturned)
+  }
 
   switch (request.method.toLocaleLowerCase()) {
     case 'put': {
-      toBeReturned.formData.isDone = formData.get('isDone')?.toString() ?? ''
-      toBeReturned.formData.notes = formData.get('notes')?.toString() ?? ''
-      toBeReturned.formData.taskId = formData.get('taskId')?.toString() ?? ''
+      toBeReturned.formData.isDone = formData.get('isDone')?.toString()
+      toBeReturned.formData.notes = formData.get('notes')?.toString()
+      toBeReturned.formData.taskId = formData.get('taskId')?.toString()
 
-      if (!toBeReturned.formData.taskId) throw new Error('must provide ID')
+      if (!toBeReturned.formData.taskId) {
+        toBeReturned.errors.taskId = 'must provide Task ID!'
+        break
+      }
 
       const index = listData.tasks.findIndex(
         task => task.id === toBeReturned.formData.taskId,
       )
-      if (toBeReturned.formData.notes.length === 0) {
+
+      if (toBeReturned.formData.isDone) {
         listData.tasks[index].isDone =
           toBeReturned.formData.isDone === 'true' ? true : false
         break
       }
 
-      listData.tasks[index].notes = toBeReturned.formData.notes
+      if (toBeReturned.formData.notes)
+        listData.tasks[index].notes = toBeReturned.formData.notes
+
+      if (!toBeReturned.formData.notes && !toBeReturned.formData.isDone) {
+        toBeReturned.errors.taskId = 'You Triggered the Wrong Action [$id]!'
+        break
+      }
+
       break
     }
+
     case 'post': {
       toBeReturned.formData.name = formData.get('name')?.toString() ?? ''
       toBeReturned.formData.notes = formData.get('notes')?.toString() ?? ''
       toBeReturned.formData.id = v4()
+
+      if (!toBeReturned.formData.name) {
+        toBeReturned.errors.name = 'Name Must be Provided!'
+        break
+      }
 
       listData.tasks[listData.tasks.length] = {
         name: formData.get('name')?.toString() ?? '',
@@ -106,14 +114,14 @@ export const action: ActionFunction = async ({request, params}) => {
     }
 
     default:
-      toBeReturned.errors[
-        'message'
-      ] = `Method[${request.method}] is not handled`
-      return json(toBeReturned)
+      toBeReturned.errors.message = `Method[${request.method}] is not handled`
+      break
   }
 
   if (Object.values(toBeReturned.errors).length > 0) {
-    return json(toBeReturned)
+    return json(toBeReturned, {
+      status: 422,
+    })
   }
 
   session.set(listId, listData)
@@ -128,6 +136,7 @@ export const action: ActionFunction = async ({request, params}) => {
 export const loader: LoaderFunction = async ({request, params}) => {
   const session = await getSession(request.headers.get('Cookie'))
   const listId = params['id']
+  let isAllChecked: boolean | 'mixed' = false
 
   if (!listId) {
     return json(
@@ -138,7 +147,7 @@ export const loader: LoaderFunction = async ({request, params}) => {
     )
   }
 
-  const listData = session.get(listId)
+  const listData: TaskType | undefined = session.get(listId)
 
   if (!listData) {
     return json(
@@ -148,39 +157,29 @@ export const loader: LoaderFunction = async ({request, params}) => {
       },
     )
   }
+
+  const checkedLength = listData.tasks.filter(({isDone}) => isDone).length
+
+  if (checkedLength === listData.tasks.length) {
+    isAllChecked = true
+  } else if (checkedLength === 0) {
+    isAllChecked = false
+  } else {
+    isAllChecked = 'mixed'
+  }
+
   return json({
     message: '',
     listId,
     listData,
+    isAllChecked,
   })
 }
 
 export default function Todo() {
-  const {listData, message, listId} = useLoaderData<TodoIdRouteLoaderData>()
-  const fetcher = useFetcher()
-  const [isAllChecked, setIsAllChecked] = React.useState<boolean | 'mixed'>(
-    () => {
-      const checkedLength = listData.tasks.filter(({isDone}) => isDone).length
-
-      if (checkedLength === listData.tasks.length) return true
-      if (checkedLength === 0) return false
-      return 'mixed'
-    },
-  )
-
-  React.useEffect(() => {
-    const checkedLength = listData.tasks.filter(({isDone}) => isDone).length
-
-    if (checkedLength === listData.tasks.length) {
-      setIsAllChecked(true)
-      return
-    }
-    if (checkedLength === 0) {
-      setIsAllChecked(false)
-      return
-    }
-    setIsAllChecked('mixed')
-  }, [listData.tasks])
+  const {listData, message, listId, isAllChecked} =
+    useLoaderData<TodoIdRouteLoaderData>()
+  const fetcher = useFetcher<ActionReturnable>()
 
   return (
     <div>
@@ -192,7 +191,6 @@ export default function Todo() {
         <span>{message}</span>
       ) : (
         <>
-          <Outlet />
           <SkinCore>
             <SkinMain>
               <h2>ToDO</h2>
@@ -203,7 +201,7 @@ export default function Todo() {
                     name="tasks"
                     checked={isAllChecked}
                     onChange={() => {
-                      if (typeof isAllChecked === 'string') {
+                      if (isAllChecked !== true) {
                         fetcher.submit(
                           {tasks: `true`},
                           {
@@ -211,7 +209,6 @@ export default function Todo() {
                             method: 'put',
                           },
                         )
-                        setIsAllChecked(true)
                         return
                       }
                       fetcher.submit(
@@ -221,11 +218,17 @@ export default function Todo() {
                           method: 'put',
                         },
                       )
-                      setIsAllChecked((state: any) => !state)
                     }}
                   />
-                  {true ? 'Unselect' : 'Select'} all condiments
+                  {isAllChecked === true ? 'Unselect' : 'Select'} all condiments
                 </label>
+                {/* // ! Handle checkBox error here */}
+                {fetcher.data?.errors && (
+                  <p className="warning">
+                    {JSON.stringify(fetcher.data.errors, null, 2)}
+                  </p>
+                )}
+
                 <fieldset style={{margin: '1rem 0 0', padding: '1rem 1.5rem'}}>
                   <legend>Tasks</legend>
                   <CreateTask />
@@ -243,23 +246,20 @@ export default function Todo() {
             </SkinMain>
             <SkinAside>
               <h2>Reminders</h2>
-              {typeof window === undefined ? (
-                <div />
-              ) : (
-                listData.reminders.map(({id, taskId, start, end}) => (
-                  <ReminderDisplay
-                    key={id}
-                    id={id}
-                    taskId={taskId}
-                    start={start}
-                    end={end}
-                  />
-                ))
-              )}
+              {listData.reminders.map(({id, taskId, start, end}) => (
+                <ReminderDisplay
+                  key={id}
+                  id={id}
+                  taskId={taskId}
+                  start={start}
+                  end={end}
+                />
+              ))}
             </SkinAside>
           </SkinCore>
         </>
       )}
+      <Outlet />
     </div>
   )
 }

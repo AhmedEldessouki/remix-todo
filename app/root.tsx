@@ -10,10 +10,16 @@ import {
 } from 'remix'
 import type {LinksFunction} from 'remix'
 
+import dialogStyles from '@reach/dialog/styles.css'
+import checkboxStyles from '@reach/checkbox/styles.css'
 import globalStylesUrl from '~/styles/global.css'
 
 export let links: LinksFunction = () => {
-  return [{rel: 'stylesheet', href: globalStylesUrl}]
+  return [
+    {rel: 'stylesheet', href: globalStylesUrl},
+    {rel: 'stylesheet', href: dialogStyles},
+    {rel: 'stylesheet', href: checkboxStyles},
+  ]
 }
 
 export default function App() {
@@ -100,7 +106,22 @@ function Document({
         {children}
         <ScrollRestoration />
         <Scripts />
-        <LiveReload />
+        {process.env.NODE_ENV === 'development' && <LiveReload />}
+        {process.env.NODE_ENV === 'development' && (
+          <p
+            style={{
+              position: 'fixed',
+              bottom: 0,
+              width: '100%',
+              background: 'var(--color-background-gradient)',
+              padding: `10px`,
+              margin: `0`,
+              textAlign: `center`,
+            }}
+          >
+            Running In Development
+          </p>
+        )}
       </body>
     </html>
   )

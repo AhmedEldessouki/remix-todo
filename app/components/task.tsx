@@ -7,6 +7,7 @@ import {v4} from 'uuid'
 import Input from './input'
 import {AddReminder} from './reminder'
 import Bell from './bell'
+import AddReminder from './addReminder'
 
 function TaskRoot({
   children,
@@ -45,29 +46,32 @@ function TaskHeader({
   disableCheck?: boolean
 }) {
   const fetcher = useFetcher()
+
   return (
-    <div className="task-header__container">
-      <label className="center">
-        <MixedCheckbox
-          name="task"
-          value={'name'}
-          disabled={disableCheck}
-          checked={isDone}
-          onChange={() => {
-            fetcher.submit({taskId: id, isDone: `${!isDone}`}, {method: 'put'})
-          }}
-        />
-      </label>
-      <DisclosureButton onClick={handleDisclosure}>
-        <span aria-hidden>{isOpen ? '🔽' : '🔼'}</span>
-        <VisuallyHidden>notes</VisuallyHidden>
-      </DisclosureButton>
-      {children}
-      <Link to={`add-reminder?task-id=${id}`}>
-        <Bell />
-        <VisuallyHidden>add reminder</VisuallyHidden>
-      </Link>
-    </div>
+    <>
+      <div className="task-header__container">
+        <label className="center">
+          <MixedCheckbox
+            name="task"
+            value={'name'}
+            disabled={disableCheck}
+            checked={isDone}
+            onChange={() => {
+              fetcher.submit(
+                {taskId: id, isDone: `${!isDone}`},
+                {method: 'put'},
+              )
+            }}
+          />
+        </label>
+        <DisclosureButton onClick={handleDisclosure}>
+          <span aria-hidden>{isOpen ? '🔽' : '🔼'}</span>
+          <VisuallyHidden>notes</VisuallyHidden>
+        </DisclosureButton>
+        {children}
+        <AddReminder taskId={id} />
+      </div>
+    </>
   )
 }
 
@@ -87,7 +91,6 @@ function TaskNotes({
 
 function CreateTask() {
   const [isOpen, setIsOpen] = React.useState(false)
-  const {current: id} = React.useRef(v4())
   const fetcher = useFetcher()
   return (
     <TaskRoot isOpen={isOpen} isDone={false} className="task-form">
@@ -95,7 +98,7 @@ function CreateTask() {
         <TaskHeader
           isDone={false}
           isOpen={isOpen}
-          id={id}
+          id="no-id"
           handleDisclosure={() => setIsOpen(state => !state)}
           disableCheck
         >
@@ -121,6 +124,10 @@ function CreateTask() {
           <button type="submit">Submit</button>
         </TaskNotes>
       </fetcher.Form>
+      {/* // ! Handle AddReminder error here */}
+      {fetcher.data?.errors && (
+        <p className="warning">{JSON.stringify(fetcher, null, 2)}</p>
+      )}
     </TaskRoot>
   )
 }
@@ -139,37 +146,44 @@ function Task({
   const [isOpen, setIsOpen] = React.useState(false)
   const fetcher = useFetcher()
   return (
-    <TaskRoot isOpen={isOpen} isDone={isDone}>
-      <TaskHeader
-        isDone={isDone}
-        isOpen={isOpen}
-        id={id}
-        handleDisclosure={() => setIsOpen(state => !state)}
-      >
-        <h3>{name}</h3>
-      </TaskHeader>
-      <TaskNotes>
-        {notes ? (
-          <blockquote>{notes}</blockquote>
-        ) : (
-          <fetcher.Form method="put" reloadDocument>
-            <label htmlFor="add-task-notes" aria-label="notes">
-              <textarea
-                name="notes"
-                id="add-task-notes"
-                rows={20}
-                cols={20}
-                placeholder="Enter your notes here"
-              />
-            </label>
-            <input type="hidden" value={id} name="taskId" />
-            <button type="submit" className="button-clean">
-              <SendIcon />
-            </button>
-          </fetcher.Form>
-        )}
-      </TaskNotes>
-    </TaskRoot>
+    <>
+      <TaskRoot isOpen={isOpen} isDone={isDone}>
+        <TaskHeader
+          isDone={isDone}
+          isOpen={isOpen}
+          id={id}
+          handleDisclosure={() => setIsOpen(state => !state)}
+        >
+          <h3>{name}</h3>
+        </TaskHeader>
+        <TaskNotes>
+          {notes ? (
+            <blockquote>{notes}</blockquote>
+          ) : (
+            <fetcher.Form method="put" reloadDocument>
+              <label htmlFor="add-task-notes" aria-label="notes">
+                <textarea
+                  name="notes"
+                  id="add-task-notes"
+                  rows={20}
+                  cols={20}
+                  placeholder="Enter your notes here"
+                />
+              </label>
+              <input type="hidden" value={id} name="taskId" />
+              {/* // ! Handle AddReminder error here */}
+              {fetcher.data?.errors && (
+                <p className="warning">{JSON.stringify(fetcher, null, 2)}</p>
+              )}
+
+              <button type="submit" className="button-clean">
+                <SendIcon />
+              </button>
+            </fetcher.Form>
+          )}
+        </TaskNotes>
+      </TaskRoot>
+    </>
   )
 }
 
