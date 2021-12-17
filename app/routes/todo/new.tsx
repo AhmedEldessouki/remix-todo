@@ -5,7 +5,7 @@ import {commitSession, getSession} from '~/sessions.server'
 import Input from '~/components/input'
 import {hasList} from '~/utils'
 import type {ActionFunction, MetaFunction} from 'remix'
-import type {TaskType, Lists, ObjectOfStrings} from '~/types'
+import type {TaskType, Lists} from '~/types'
 
 export const meta: MetaFunction = () => {
   return {
@@ -19,7 +19,7 @@ export const action: ActionFunction = async ({request}) => {
   const formData = await request.formData()
   let lists: Lists = session.get('lists')
 
-  const errors: ObjectOfStrings = {}
+  const errors: Record<string, string> = {}
   console.log(formData)
 
   const listName = formData.get('name')?.toString().trim()

@@ -1,19 +1,17 @@
 import React from 'react'
-import {
-  LinksFunction,
-  useLoaderData,
-  json,
-  useFetcher,
-  ActionFunction,
-  Outlet,
-} from 'remix'
+import {useLoaderData, json, useFetcher, Outlet} from 'remix'
 import {v4} from 'uuid'
 import {MixedCheckbox} from '@reach/checkbox'
 import {commitSession, getSession} from '~/sessions.server'
 import Task, {CreateTask} from '~/components/task'
 import {SkinAside, SkinCore, SkinMain} from '~/components/skin'
 import ReminderDisplay from '~/components/reminder'
-import type {LoaderFunction, MetaFunction} from 'remix'
+import type {
+  LinksFunction,
+  ActionFunction,
+  LoaderFunction,
+  MetaFunction,
+} from 'remix'
 import type {TaskType, TodoIdRouteLoaderData, ActionReturnable} from '~/types'
 
 import taskStyles from '~/styles/tasks.css'

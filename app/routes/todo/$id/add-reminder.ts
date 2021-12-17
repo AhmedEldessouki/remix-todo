@@ -1,27 +1,9 @@
-import {
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogLabel,
-  AlertDialogOverlay,
-} from '@reach/alert-dialog'
 import React from 'react'
-import {
-  redirect,
-  Link,
-  useFetcher,
-  useLoaderData,
-  json,
-  useMatches,
-} from 'remix'
+import {redirect, json} from 'remix'
 import {v4} from 'uuid'
 import {commitSession, getSession} from '~/sessions.server'
-import type {ActionFunction, LoaderFunction, LinksFunction} from 'remix'
-import type {
-  ActionReturnable,
-  ObjectOfStrings,
-  TaskType,
-  TodoIdRouteLoaderData,
-} from '~/types'
+import type {ActionFunction} from 'remix'
+import type {ActionReturnable, TaskType} from '~/types'
 
 // ! Todo: Check the Date and Time Input
 // ! Todo: If the also have reported bug concerning
