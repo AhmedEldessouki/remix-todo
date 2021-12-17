@@ -113,7 +113,11 @@ function ReminderDisplay({
     )
   }
   return (
-    <div className="reminder__container" key={id + taskId} itemID={id + taskId}>
+    <div
+      className="reminder__container on-going"
+      key={id + taskId}
+      itemID={id + taskId}
+    >
       <ReminderSkin timer={timer} end={end} id={id} />
     </div>
   )

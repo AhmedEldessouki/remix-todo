@@ -175,12 +175,17 @@ svg {
   justify-content: center;
   overflow: hidden;
   height: 8.31em;
+  box-shadow: 0.02em 0.02em 0.65em -1px #3972844f;
 }
 
 .passed > h1 {
   font-size: 2.4rem;
   font-variant: all-petite-caps;
   font-style: italic;
+}
+
+.on-going {
+  box-shadow: 0.02em 0.02em 0.65em -1px hsl(212.5, 35.9%, 45.3%);
 }
 
 .warning {

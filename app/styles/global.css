@@ -84,6 +84,8 @@ body {
 a {
   color: var(--color-links);
   text-decoration: none;
+  padding: 0.5em 2em;
+  text-transform: capitalize;
 }
 
 a:hover {
@@ -110,14 +112,14 @@ hr {
   height: 1px;
   border: 0;
   background-color: var(--color-border);
-  margin-top: 2rem;
-  margin-bottom: 2rem;
 }
 
 ul,
 ol,
 li {
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 textarea,
@@ -150,6 +152,13 @@ pre {
   border-left: 0.5ch solid var(--color-border);
 }
 
+nav > ul {
+  display: flex;
+}
+nav > ul > li {
+  margin: 1em;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -160,6 +169,11 @@ pre {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+.active-link {
+  background: var(--color-background-secondary);
+  border-radius: var(--rounded);
 }
 
 .container {

@@ -3,6 +3,7 @@ import type {LoaderFunction} from 'remix'
 import React from 'react'
 import {getSession} from '~/sessions.server'
 import type {Lists} from '~/types'
+import ActiveLink from '~/components/activeLink'
 
 export const loader: LoaderFunction = async ({request}) => {
   const session = await getSession(request.headers.get('Cookie'))
@@ -26,7 +27,7 @@ export default function Todo() {
           </li>
           {lists.map(({name, id}) => (
             <li key={id}>
-              <NavLink to={id}>{name}</NavLink>
+              <ActiveLink to={id}>{name}</ActiveLink>
             </li>
           ))}
         </ul>
