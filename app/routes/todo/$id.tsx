@@ -185,78 +185,74 @@ export default function Todo() {
           // ! to display the nav data here 
           // ! instead of refetching them  
       */}
-      {message ? (
-        <span>{message}</span>
-      ) : (
-        <>
-          <SkinCore>
-            <SkinMain>
-              <h2>ToDO</h2>
-              <fieldset>
-                <label>
-                  <MixedCheckbox
-                    value="tasks"
-                    name="tasks"
-                    checked={isAllChecked}
-                    onChange={() => {
-                      if (isAllChecked !== true) {
-                        fetcher.submit(
-                          {tasks: `true`},
-                          {
-                            action: `/todo/check-all?id=${listId}`,
-                            method: 'put',
-                          },
-                        )
-                        return
-                      }
-                      fetcher.submit(
-                        {tasks: `${!isAllChecked}`},
-                        {
-                          action: `/todo/check-all?id=${listId}`,
-                          method: 'put',
-                        },
-                      )
-                    }}
-                  />
-                  {isAllChecked === true ? 'Unselect' : 'Select'} all condiments
-                </label>
-                {/* // ! Handle checkBox error here */}
-                {fetcher.data?.errors && (
-                  <p className="warning">
-                    {JSON.stringify(fetcher.data.errors, null, 2)}
-                  </p>
-                )}
+      {message && <span>{message}</span>}
+      <SkinCore>
+        <SkinMain>
+          <h2>ToDO</h2>
+          <fieldset>
+            <label>
+              <MixedCheckbox
+                value="tasks"
+                name="tasks"
+                checked={isAllChecked}
+                onChange={() => {
+                  if (isAllChecked !== true) {
+                    fetcher.submit(
+                      {tasks: `true`},
+                      {
+                        action: `/todo/check-all?id=${listId}`,
+                        method: 'put',
+                      },
+                    )
+                    return
+                  }
+                  fetcher.submit(
+                    {tasks: `${!isAllChecked}`},
+                    {
+                      action: `/todo/check-all?id=${listId}`,
+                      method: 'put',
+                    },
+                  )
+                }}
+              />
+              {isAllChecked === true ? 'Unselect' : 'Select'} all condiments
+            </label>
+            {/* // ! Handle checkBox error here */}
+            {fetcher.data?.errors && (
+              <p className="warning">
+                {JSON.stringify(fetcher.data.errors, null, 2)}
+              </p>
+            )}
 
-                <fieldset style={{margin: '1rem 0 0', padding: '1rem 1.5rem'}}>
-                  <legend>Tasks</legend>
-                  <CreateTask />
-                  {listData.tasks.map(({name, id, isDone, notes}) => (
-                    <Task
-                      key={id}
-                      id={id}
-                      name={name}
-                      isDone={isDone}
-                      notes={notes}
-                    />
-                  ))}
-                </fieldset>
-              </fieldset>
-            </SkinMain>
-            <SkinAside>
-              <h2>Reminders</h2>
-              {listData.reminders.map(({id, taskId, start, end}) => (
-                <ReminderDisplay
+            <fieldset style={{margin: '1rem 0 0', padding: '1rem 1.5rem'}}>
+              <legend>Tasks</legend>
+              <CreateTask />
+              {listData.tasks.map(({name, id, isDone, notes}) => (
+                <Task
                   key={id}
                   id={id}
-                  taskId={taskId}
-                  start={start}
-                  end={end}
+                  name={name}
+                  isDone={isDone}
+                  notes={notes}
                 />
               ))}
-            </SkinAside>
-          </SkinCore>
-        </>
-      )}
+            </fieldset>
+          </fieldset>
+        </SkinMain>
+        <SkinAside>
+          <h2>Reminders</h2>
+          {listData.reminders.map(({id, taskId, start, end}) => (
+            <ReminderDisplay
+              key={id}
+              id={id}
+              taskId={taskId}
+              start={start}
+              end={end}
+            />
+          ))}
+        </SkinAside>
+      </SkinCore>
+
       <Outlet />
     </div>
   )

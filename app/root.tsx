@@ -135,16 +135,6 @@ function Layout({children}: {children: React.ReactNode}) {
           <Link to="/todo">
             <h1>TODO</h1>
           </Link>
-          <div>
-            <button
-              type="button"
-              onClick={() => {
-                // ! TODO: Add a new ListName to Cookie
-              }}
-            >
-              Create List
-            </button>
-          </div>
         </div>
       </header>
       <div className="remix-app__main">

@@ -26,7 +26,7 @@ export default function Todo() {
             <NavLink to="new">Create New List</NavLink>
           </li>
           {lists.map(({name, id}) => (
-            <li key={id}>
+            <li key={`link-${id}`}>
               <ActiveLink to={id}>{name}</ActiveLink>
             </li>
           ))}

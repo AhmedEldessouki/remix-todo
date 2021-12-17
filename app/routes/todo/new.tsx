@@ -17,7 +17,7 @@ export const meta: MetaFunction = () => {
 export const action: ActionFunction = async ({request}) => {
   const session = await getSession(request.headers.get('Cookie'))
   const formData = await request.formData()
-  let lists: Lists = session.get('lists')
+  const lists: Lists = session.get('lists') ?? []
 
   const errors: Record<string, string> = {}
   console.log(formData)
@@ -40,12 +40,6 @@ export const action: ActionFunction = async ({request}) => {
   }
 
   const newList = {name: listName, id: v4()}
-
-  if (!Array.isArray(lists)) {
-    lists = [newList]
-  } else {
-    lists = [...lists, newList]
-  }
 
   const firstTaskId = v4()
 
@@ -76,7 +70,7 @@ export const action: ActionFunction = async ({request}) => {
     ],
   }
 
-  session.set('lists', lists)
+  session.set('lists', [...lists, newList])
   session.set(newList.id, defaultList)
 
   return redirect(`/todo/${newList.id}`, {
@@ -92,7 +86,9 @@ export default function New() {
       <h2>Create List</h2>
       <Form method="post" reloadDocument>
         <Input label="Name" name="name" id="create-list-name" type="text" />
-        <button type="submit">Submit</button>
+        <pre>
+          Press <u>Enter</u> to submit.
+        </pre>
       </Form>
     </section>
   )

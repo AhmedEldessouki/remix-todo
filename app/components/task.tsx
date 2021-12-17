@@ -5,7 +5,6 @@ import {MixedCheckbox} from '@reach/checkbox'
 import {Form, Link, useFetcher} from 'remix'
 import {v4} from 'uuid'
 import Input from './input'
-import {AddReminder} from './reminder'
 import Bell from './bell'
 import AddReminder from './addReminder'
 
@@ -134,7 +133,7 @@ function CreateTask() {
 
 function Task({
   name,
-  id,
+  id: taskId,
   isDone,
   notes,
 }: {
@@ -151,7 +150,7 @@ function Task({
         <TaskHeader
           isDone={isDone}
           isOpen={isOpen}
-          id={id}
+          id={taskId}
           handleDisclosure={() => setIsOpen(state => !state)}
         >
           <h3>{name}</h3>
@@ -170,7 +169,7 @@ function Task({
                   placeholder="Enter your notes here"
                 />
               </label>
-              <input type="hidden" value={id} name="taskId" />
+              <input type="hidden" value={taskId} name="taskId" />
               {/* // ! Handle AddReminder error here */}
               {fetcher.data?.errors && (
                 <p className="warning">{JSON.stringify(fetcher, null, 2)}</p>

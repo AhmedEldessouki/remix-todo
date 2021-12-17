@@ -49,7 +49,7 @@ const testDeadLine = Date.now() + 1000000
 function ReminderSkin({
   timer,
   end,
-  id,
+  id: reminderId,
 }: {
   timer: TimerType
   end: number
@@ -65,7 +65,10 @@ function ReminderSkin({
         {Object.entries(timer).map(([key, value], i) => {
           if (typeof value === 'string') return null
           return (
-            <div className="reminder-main__sub-container" key={`${id}-${i}`}>
+            <div
+              className="reminder-main__sub-container"
+              key={`${reminderId}-${i}`}
+            >
               <p>{key}</p>
               <p className="numbers">{`${value}`.padStart(2, '0')}</p>
             </div>

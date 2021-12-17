@@ -84,8 +84,12 @@ body {
 a {
   color: var(--color-links);
   text-decoration: none;
-  padding: 0.5em 2em;
   text-transform: capitalize;
+  transition: padding 300ms ease-in-out;
+}
+
+a > h1 {
+  margin: 0;
 }
 
 a:hover {
@@ -154,7 +158,10 @@ pre {
 
 nav > ul {
   display: flex;
+  margin: 0.55em 0;
+  flex-wrap: wrap;
 }
+
 nav > ul > li {
   margin: 1em;
 }
@@ -174,6 +181,7 @@ nav > ul > li {
 .active-link {
   background: var(--color-background-secondary);
   border-radius: var(--rounded);
+  padding: 0.5em 2em;
 }
 
 .container {
