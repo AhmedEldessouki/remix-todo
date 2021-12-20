@@ -1,5 +1,6 @@
 import React from 'react'
-import {v4} from 'uuid'
+import {useMatches} from 'remix'
+import {ActionReturnable, TodoIdRouteLoaderData} from '~/types'
 
 type TimerType = {
   days: number
@@ -44,20 +45,27 @@ const handleCountDown = (
   left.seconds = new Date(reminder - today).getSeconds()
   return left
 }
-const testDeadLine = Date.now() + 1000000
 
 function ReminderSkin({
   timer,
   end,
   id: reminderId,
+  taskId,
 }: {
   timer: TimerType
   end: number
   id: string
+  taskId: string
 }) {
+  const [, , parent] = useMatches()
+  const [task] = React.useState(
+    (parent.data as TodoIdRouteLoaderData).listData.tasks.filter(
+      task => task.id === taskId,
+    )[0],
+  )
   return (
     <>
-      <div className="reminder-header__container">
+      <div className="reminder-text__container">
         <span>{timer.status}</span>
         <span>{new Date(end).toLocaleDateString()}</span>
       </div>
@@ -75,7 +83,10 @@ function ReminderSkin({
           )
         })}
       </div>
-      <div className="reminder-footer__container">
+      <div className="reminder-text__container">
+        <span>
+          {task.isDone ? '✔' : '❌'} {task.name}
+        </span>
         <span>{displayLeft(timer)}</span>
       </div>
     </>
@@ -107,7 +118,7 @@ function ReminderDisplay({
     return (
       <div className="passed__container">
         <div className="reminder__container">
-          <ReminderSkin timer={timer} end={end} id={id} />
+          <ReminderSkin timer={timer} end={end} id={id} taskId={taskId} />
         </div>
         <div className="reminder__container passed">
           <h1>{timer.status}</h1>
@@ -121,7 +132,7 @@ function ReminderDisplay({
       key={id + taskId}
       itemID={id + taskId}
     >
-      <ReminderSkin timer={timer} end={end} id={id} />
+      <ReminderSkin timer={timer} end={end} id={id} taskId={taskId} />
     </div>
   )
 }

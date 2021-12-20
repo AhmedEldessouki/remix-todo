@@ -116,17 +116,21 @@ svg {
   height: 8.3em;
 }
 
-.reminder__container > div > span {
+.reminder-text__container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.reminder-text__container > span {
   margin: 0 1em;
   color: var(--color-links);
   font-style: italic;
   letter-spacing: 0.04em;
   font-size: 0.9rem;
-}
-
-.reminder-header__container {
-  display: flex;
-  justify-content: space-between;
+  max-width: 94px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .reminder-main__container {
@@ -154,11 +158,6 @@ svg {
   font-size: 2rem;
   font-style: normal;
   line-height: 1;
-}
-
-.reminder-footer__container {
-  display: flex;
-  justify-content: end;
 }
 
 .passed__container {
