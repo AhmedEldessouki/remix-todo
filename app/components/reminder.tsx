@@ -77,7 +77,14 @@ function ReminderSkin({
               className="reminder-main__sub-container"
               key={`${reminderId}-${i}`}
             >
-              <p>{key}</p>
+              {key !== 'seconds' ? (
+                <>
+                  <p>{key}</p>
+                  <p>:</p>
+                </>
+              ) : (
+                <p>{key}</p>
+              )}
               <p className="numbers">{`${value}`.padStart(2, '0')}</p>
             </div>
           )
