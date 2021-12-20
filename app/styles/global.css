@@ -257,7 +257,7 @@ nav > ul > li {
 
 .remix__page > aside {
   margin: 0;
-  padding: 1.5ch 2ch;
+  padding: 1.5ch 2ch 3.5ch;
   border: solid 1px var(--color-border);
   border-radius: var(--rounded);
   max-width: 400px;
