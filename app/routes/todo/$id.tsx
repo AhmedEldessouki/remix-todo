@@ -97,17 +97,45 @@ export const action: ActionFunction = async ({request, params}) => {
       toBeReturned.formData.notes = formData.get('notes')?.toString() ?? ''
       toBeReturned.formData.id = v4()
 
-      if (!toBeReturned.formData.name) {
-        toBeReturned.errors.name = 'Name Must be Provided!'
+      const isReminder = formData.get('isReminder')?.toString()
+
+      if (!isReminder) {
+        if (!toBeReturned.formData.name) {
+          toBeReturned.errors.name = 'Name Must be Provided!'
+          break
+        }
+
+        listData.tasks[listData.tasks.length] = {
+          name: formData.get('name')?.toString() ?? '',
+          notes: formData.get('notes')?.toString() ?? '',
+          id: toBeReturned.formData.id,
+          isDone: false,
+        }
         break
       }
+      toBeReturned.formData.taskId = formData.get('taskId')?.toString()
+      toBeReturned.formData.start = formData.get('start')?.toString()
+      toBeReturned.formData.end = formData.get('end')?.toString()
 
-      listData.tasks[listData.tasks.length] = {
-        name: formData.get('name')?.toString() ?? '',
-        notes: formData.get('notes')?.toString() ?? '',
-        id: toBeReturned.formData.id,
-        isDone: false,
+      if (!toBeReturned.formData.taskId) {
+        toBeReturned.errors.taskId = 'ListName is undefined'
+        break
       }
+      if (!toBeReturned.formData.end) {
+        toBeReturned.errors.end = 'To Date must be provided'
+        break
+      }
+      if (!toBeReturned.formData.start) {
+        toBeReturned.formData.start = new Date().toISOString()
+      }
+
+      listData.reminders.push({
+        taskId: toBeReturned.formData.taskId,
+        start: new Date(toBeReturned.formData.start).getTime(),
+        end: new Date(toBeReturned.formData.end).getTime(),
+        id: v4(),
+      })
+
       break
     }
 
@@ -145,7 +173,7 @@ export const action: ActionFunction = async ({request, params}) => {
 
   session.set(listId, {...listData})
 
-  return json(toBeReturned, {
+  return redirect(`/todo/${listId}`, {
     headers: {
       'Set-Cookie': await commitSession(session),
     },

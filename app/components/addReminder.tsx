@@ -66,13 +66,11 @@ export default function AddReminder({taskId}: {taskId: string}) {
       {isOpen && (
         <AlertDialogOverlay leastDestructiveRef={cancelRef}>
           <AlertDialogContent>
-            <fetcher.Form
-              method="post"
-              action={`${match[match.length - 1].pathname}/add-reminder`}
-            >
+            <fetcher.Form method="post">
               <AlertDialogLabel>Create Reminder</AlertDialogLabel>
               <AlertDialogDescription>
                 <input type="hidden" name="taskId" value={taskId} />
+                <input type="hidden" name="isReminder" value="true" />
                 <label htmlFor="reminder-start">
                   From
                   <input
