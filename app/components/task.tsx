@@ -2,10 +2,8 @@ import React from 'react'
 import {Disclosure, DisclosureButton, DisclosurePanel} from '@reach/disclosure'
 import VisuallyHidden from '@reach/visually-hidden'
 import {MixedCheckbox} from '@reach/checkbox'
-import {Form, Link, useFetcher} from 'remix'
-import {v4} from 'uuid'
+import {useFetcher} from 'remix'
 import Input from './input'
-import Bell from './bell'
 import AddReminder from './addReminder'
 
 function TaskRoot({
