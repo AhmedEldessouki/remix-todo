@@ -1,5 +1,5 @@
 import React from 'react'
-import {useLoaderData, json, useFetcher, Outlet} from 'remix'
+import {useLoaderData, json, useFetcher, Outlet, redirect} from 'remix'
 import {v4} from 'uuid'
 import {MixedCheckbox} from '@reach/checkbox'
 import {commitSession, getSession} from '~/sessions.server'
@@ -111,9 +111,30 @@ export const action: ActionFunction = async ({request, params}) => {
       break
     }
 
-    default:
+    case 'delete': {
+      toBeReturned.formData.taskId = formData.get('taskId')?.toString()
+
+      if (!toBeReturned.formData.taskId) {
+        toBeReturned.errors.taskId = "Task Id wasn't provided."
+        break
+      }
+
+      const tasksIndex = listData.tasks.findIndex(
+        tasks => tasks.id === toBeReturned.formData.taskId,
+      )
+      listData.tasks.splice(tasksIndex, 1)
+      const remindersIndex = listData.reminders.findIndex(
+        reminders => reminders.taskId === toBeReturned.formData.taskId,
+      )
+      listData.reminders.splice(remindersIndex, 1)
+
+      break
+    }
+
+    default: {
       toBeReturned.errors.message = `Method[${request.method}] is not handled`
       break
+    }
   }
 
   if (Object.values(toBeReturned.errors).length > 0) {
@@ -122,7 +143,7 @@ export const action: ActionFunction = async ({request, params}) => {
     })
   }
 
-  session.set(listId, listData)
+  session.set(listId, {...listData})
 
   return json(toBeReturned, {
     headers: {

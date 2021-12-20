@@ -158,7 +158,13 @@ function Task({
         isDone={isDone}
         handleTransCan={() => setIsMouseIn(status => !status)}
       >
-        {isMouseIn && <Delete handleClick={() => {}} />}
+        {isMouseIn && (
+          <Delete
+            handleClick={() => {
+              fetcher.submit({taskId}, {method: 'delete'})
+            }}
+          />
+        )}
         <TaskHeader
           isDone={isDone}
           isOpen={isOpen}

@@ -2,14 +2,13 @@ import React from 'react'
 
 function Delete({handleClick}: {handleClick: () => void}) {
   return (
-    <button type="button" className="delete-icon" onClick={handleClick}>
+    <button type="submit" className="delete-icon" onClick={handleClick}>
       <svg
         fill="none"
         height="24"
-        stroke="#000"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
         viewBox="0 0 24 24"
         width="24"
         xmlns="http://www.w3.org/2000/svg"
