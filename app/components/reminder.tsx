@@ -58,10 +58,10 @@ function ReminderSkin({
   taskId: string
 }) {
   const [, , parent] = useMatches()
-  const [task] = React.useState(
-    (parent.data as TodoIdRouteLoaderData).listData.tasks.filter(
+  const [index] = React.useState(
+    (parent.data as TodoIdRouteLoaderData).listData.tasks.findIndex(
       task => task.id === taskId,
-    )[0],
+    ),
   )
   return (
     <>
@@ -92,7 +92,10 @@ function ReminderSkin({
       </div>
       <div className="reminder-text__container">
         <span>
-          {task.isDone ? '✔' : '❌'} {task.name}
+          {(parent.data as TodoIdRouteLoaderData).listData.tasks[index].isDone
+            ? '✔'
+            : '❌'}{' '}
+          {(parent.data as TodoIdRouteLoaderData).listData.tasks[index].name}
         </span>
         <span>{displayLeft(timer)}</span>
       </div>
