@@ -218,6 +218,23 @@ svg {
   color: var(--color-red);
 }
 
+.delete-icon {
+  position: absolute;
+  background: var(--color-background-shadow);
+  margin-top: -0.95em;
+  margin-left: -0.95em;
+  padding: 0.2em 0.1em 0.1em;
+  border-color: var(--color-red);
+}
+
+.delete-icon > svg {
+  stroke: var(--color-red);
+}
+
+.delete-icon:hover {
+  background: var(--color-background);
+}
+
 [data-reach-disclosure-button] {
   padding: 0.5rem 0.6rem;
   justify-self: center;
@@ -279,6 +296,10 @@ svg {
   .slide-down[data-reach-disclosure-panel],
   .slide-down[data-reach-disclosure-panel] {
     animation: slide-down 0.3s ease;
+  }
+
+  .delete-icon {
+    transition: background 200ms ease-in-out;
   }
 }
 

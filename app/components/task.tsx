@@ -5,23 +5,31 @@ import {MixedCheckbox} from '@reach/checkbox'
 import {useFetcher} from 'remix'
 import Input from './input'
 import AddReminder from './addReminder'
+import Delete from './delete'
 
 function TaskRoot({
   children,
   isDone,
   className = '',
   isOpen,
+  handleTransCan,
 }: {
   children: React.ReactNode
   isDone: boolean
   isOpen: boolean
   className?: string
+  handleTransCan?: () => void
 }) {
   // ! TODO: Handle is-done in css for a change
   // * Note To Self: cannot use self-made attributes but
   // * but you can use data-state to control the styling
   return (
-    <li className={`task-root__container ${className}`} data-state={isDone}>
+    <li
+      className={`task-root__container ${className}`}
+      data-state={isDone}
+      onMouseEnter={handleTransCan}
+      onMouseLeave={handleTransCan}
+    >
       <Disclosure open={isOpen}>{children}</Disclosure>
     </li>
   )
@@ -141,10 +149,16 @@ function Task({
   notes: string
 }) {
   const [isOpen, setIsOpen] = React.useState(false)
+  const [isMouseIn, setIsMouseIn] = React.useState(false)
   const fetcher = useFetcher()
   return (
     <>
-      <TaskRoot isOpen={isOpen} isDone={isDone}>
+      <TaskRoot
+        isOpen={isOpen}
+        isDone={isDone}
+        handleTransCan={() => setIsMouseIn(status => !status)}
+      >
+        {isMouseIn && <Delete handleClick={() => {}} />}
         <TaskHeader
           isDone={isDone}
           isOpen={isOpen}
