@@ -58,7 +58,9 @@ svg {
 }
 
 .task-form {
+  box-shadow: 0.0002em 0.01em 0.65em -1px #834aff;
   background-image: var(--color-background-gradient) !important;
+  padding-top: 0.28em;
 }
 
 .task-header__container {
