@@ -64,7 +64,14 @@ export default function AddReminder({taskId}: {taskId: string}) {
         <VisuallyHidden>add reminder</VisuallyHidden>
       </button>
       {isOpen && (
-        <AlertDialogOverlay leastDestructiveRef={cancelRef}>
+        <AlertDialogOverlay
+          leastDestructiveRef={cancelRef}
+          onClick={() => setIsOpen(status => !status)}
+          onKeyDown={e => {
+            if (e.code.toLocaleLowerCase() !== 'escape') return
+            setIsOpen(status => !status)
+          }}
+        >
           <AlertDialogContent>
             <fetcher.Form method="post">
               <AlertDialogLabel>Create Reminder</AlertDialogLabel>
