@@ -218,6 +218,11 @@ svg {
   color: var(--color-red);
 }
 
+.reminder-start {
+  font-size: 2.2rem;
+  margin: 0;
+}
+
 .delete-icon {
   position: absolute;
   background: var(--color-background-shadow);

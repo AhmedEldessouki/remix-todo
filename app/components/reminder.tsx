@@ -49,11 +49,13 @@ const handleCountDown = (
 function ReminderSkin({
   timer,
   end,
+  start,
   id: reminderId,
   taskId,
 }: {
   timer: TimerType
   end: number
+  start?: number
   id: string
   taskId: string
 }) {
@@ -70,25 +72,31 @@ function ReminderSkin({
         <span>{new Date(end).toLocaleDateString()}</span>
       </div>
       <div className="reminder-main__container">
-        {Object.entries(timer).map(([key, value], i) => {
-          if (typeof value === 'string') return null
-          return (
-            <div
-              className="reminder-main__sub-container"
-              key={`${reminderId}-${i}`}
-            >
-              {key !== 'seconds' ? (
-                <>
+        {start && start > Date.now() ? (
+          <p className="reminder-start">
+            {new Date(start).toLocaleDateString().replace(/[/]/g, '-')}
+          </p>
+        ) : (
+          Object.entries(timer).map(([key, value], i) => {
+            if (typeof value === 'string') return null
+            return (
+              <div
+                className="reminder-main__sub-container"
+                key={`${reminderId}-${i}`}
+              >
+                {key !== 'seconds' ? (
+                  <>
+                    <p>{key}</p>
+                    <p>:</p>
+                  </>
+                ) : (
                   <p>{key}</p>
-                  <p>:</p>
-                </>
-              ) : (
-                <p>{key}</p>
-              )}
-              <p className="numbers">{`${value}`.padStart(2, '0')}</p>
-            </div>
-          )
-        })}
+                )}
+                <p className="numbers">{`${value}`.padStart(2, '0')}</p>
+              </div>
+            )
+          })
+        )}
       </div>
       <div className="reminder-text__container">
         <span>
@@ -118,6 +126,7 @@ function ReminderDisplay({
 
   React.useEffect(() => {
     if (Date.now() > end) return
+    if (start > Date.now()) return
     setInterval(() => {
       setTimer(handleCountDown(end))
     }, 100)
@@ -143,7 +152,13 @@ function ReminderDisplay({
       key={id + taskId}
       itemID={id + taskId}
     >
-      <ReminderSkin timer={timer} end={end} id={id} taskId={taskId} />
+      <ReminderSkin
+        timer={timer}
+        end={end}
+        id={id}
+        taskId={taskId}
+        start={start}
+      />
     </div>
   )
 }
