@@ -191,7 +191,7 @@ export const action: ActionFunction = async ({request, params}) => {
 
   session.set(listId, {...listData})
 
-  return redirect(`/todo/${listId}`, {
+  return json(toBeReturned, {
     headers: {
       'Set-Cookie': await commitSession(session),
     },

@@ -42,6 +42,12 @@ export default function AddReminder({taskId}: {taskId: string}) {
       setEnd(getTodayDate())
     }
   }, [])
+
+  React.useEffect(() => {
+    if (fetcher.type === 'done') {
+      setIsOpen(false)
+    }
+  }, [fetcher.type])
   // const taskRemindersCount = (
   //   listData.data as TodoIdRouteLoaderData
   // ).listData.reminders.filter(reminder => reminder.taskId === taskId).length
