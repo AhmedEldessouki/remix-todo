@@ -91,13 +91,11 @@ export default function AddReminder({taskId}: {taskId: string}) {
                       setEnd(start)
                     }}
                     onChange={e => {
-                      console.log(e)
                       if (
                         new Date(today).getTime() >
                         new Date(e.target.value).getTime()
                       )
                         return
-                      console.log(`today.getMinutes()`, today, e.target.value)
                       setStart(e.target.value)
                     }}
                     id="reminder-start"
