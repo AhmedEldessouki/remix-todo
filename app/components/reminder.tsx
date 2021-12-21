@@ -115,7 +115,7 @@ function ReminderDisplay({
   end: number
 }) {
   const [timer, setTimer] = React.useState(() => handleCountDown(end))
-  console.log('[object]')
+
   React.useEffect(() => {
     if (Date.now() > end) return
     setInterval(() => {
