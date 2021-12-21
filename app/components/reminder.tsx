@@ -1,6 +1,7 @@
 import React from 'react'
-import {useMatches} from 'remix'
+import {useFetcher, useMatches} from 'remix'
 import {ActionReturnable, TodoIdRouteLoaderData} from '~/types'
+import Delete from './delete'
 
 type TimerType = {
   days: number
@@ -49,19 +50,21 @@ const handleCountDown = (
 function ReminderSkin({
   timer,
   end,
+  start,
   id: reminderId,
   taskId,
 }: {
   timer: TimerType
   end: number
+  start?: number
   id: string
   taskId: string
 }) {
   const [, , parent] = useMatches()
-  const [task] = React.useState(
-    (parent.data as TodoIdRouteLoaderData).listData.tasks.filter(
+  const [index] = React.useState(
+    (parent.data as TodoIdRouteLoaderData).listData.tasks.findIndex(
       task => task.id === taskId,
-    )[0],
+    ),
   )
   return (
     <>
@@ -70,29 +73,38 @@ function ReminderSkin({
         <span>{new Date(end).toLocaleDateString()}</span>
       </div>
       <div className="reminder-main__container">
-        {Object.entries(timer).map(([key, value], i) => {
-          if (typeof value === 'string') return null
-          return (
-            <div
-              className="reminder-main__sub-container"
-              key={`${reminderId}-${i}`}
-            >
-              {key !== 'seconds' ? (
-                <>
+        {start && start > Date.now() ? (
+          <p className="reminder-start">
+            {new Date(start).toLocaleDateString().replace(/[/]/g, '-')}
+          </p>
+        ) : (
+          Object.entries(timer).map(([key, value], i) => {
+            if (typeof value === 'string') return null
+            return (
+              <div
+                className="reminder-main__sub-container"
+                key={`${reminderId}-${i}`}
+              >
+                {key !== 'seconds' ? (
+                  <>
+                    <p>{key}</p>
+                    <p>:</p>
+                  </>
+                ) : (
                   <p>{key}</p>
-                  <p>:</p>
-                </>
-              ) : (
-                <p>{key}</p>
-              )}
-              <p className="numbers">{`${value}`.padStart(2, '0')}</p>
-            </div>
-          )
-        })}
+                )}
+                <p className="numbers">{`${value}`.padStart(2, '0')}</p>
+              </div>
+            )
+          })
+        )}
       </div>
       <div className="reminder-text__container">
         <span>
-          {task.isDone ? '✔' : '❌'} {task.name}
+          {(parent.data as TodoIdRouteLoaderData).listData.tasks[index].isDone
+            ? '✔'
+            : '❌'}{' '}
+          {(parent.data as TodoIdRouteLoaderData).listData.tasks[index].name}
         </span>
         <span>{displayLeft(timer)}</span>
       </div>
@@ -112,19 +124,33 @@ function ReminderDisplay({
   end: number
 }) {
   const [timer, setTimer] = React.useState(() => handleCountDown(end))
+  const [isMouseIn, setIsMouseIn] = React.useState(false)
+  const fetcher = useFetcher()
+
+  const handleTrashCan = () => setIsMouseIn(status => !status)
+  const handleDelete = () => {
+    fetcher.submit({reminderId: id}, {method: 'delete'})
+  }
 
   React.useEffect(() => {
+    if (Date.now() > end) return
+    if (start > Date.now()) return
     setInterval(() => {
       setTimer(handleCountDown(end))
     }, 100)
 
     return () => clearInterval()
-  }, [handleCountDown])
+  }, [end])
 
   if (timer.status === 'passed') {
     return (
-      <div className="passed__container">
+      <div
+        className="passed__container"
+        onMouseEnter={handleTrashCan}
+        onMouseLeave={handleTrashCan}
+      >
         <div className="reminder__container">
+          {isMouseIn && <Delete handleClick={handleDelete} />}
           <ReminderSkin timer={timer} end={end} id={id} taskId={taskId} />
         </div>
         <div className="reminder__container passed">
@@ -138,8 +164,17 @@ function ReminderDisplay({
       className="reminder__container on-going"
       key={id + taskId}
       itemID={id + taskId}
+      onMouseEnter={handleTrashCan}
+      onMouseLeave={handleTrashCan}
     >
-      <ReminderSkin timer={timer} end={end} id={id} taskId={taskId} />
+      {isMouseIn && <Delete handleClick={handleDelete} />}
+      <ReminderSkin
+        timer={timer}
+        end={end}
+        id={id}
+        taskId={taskId}
+        start={start}
+      />
     </div>
   )
 }

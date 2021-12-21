@@ -42,6 +42,12 @@ export default function AddReminder({taskId}: {taskId: string}) {
       setEnd(getTodayDate())
     }
   }, [])
+
+  React.useEffect(() => {
+    if (fetcher.type === 'done') {
+      setIsOpen(false)
+    }
+  }, [fetcher.type])
   // const taskRemindersCount = (
   //   listData.data as TodoIdRouteLoaderData
   // ).listData.reminders.filter(reminder => reminder.taskId === taskId).length
@@ -64,15 +70,20 @@ export default function AddReminder({taskId}: {taskId: string}) {
         <VisuallyHidden>add reminder</VisuallyHidden>
       </button>
       {isOpen && (
-        <AlertDialogOverlay leastDestructiveRef={cancelRef}>
+        <AlertDialogOverlay
+          leastDestructiveRef={cancelRef}
+          onClick={() => setIsOpen(status => !status)}
+          onKeyDown={e => {
+            if (e.code.toLocaleLowerCase() !== 'escape') return
+            setIsOpen(status => !status)
+          }}
+        >
           <AlertDialogContent>
-            <fetcher.Form
-              method="post"
-              action={`${match[match.length - 1].pathname}/add-reminder`}
-            >
+            <fetcher.Form method="post">
               <AlertDialogLabel>Create Reminder</AlertDialogLabel>
               <AlertDialogDescription>
                 <input type="hidden" name="taskId" value={taskId} />
+                <input type="hidden" name="isReminder" value="true" />
                 <label htmlFor="reminder-start">
                   From
                   <input
@@ -86,13 +97,11 @@ export default function AddReminder({taskId}: {taskId: string}) {
                       setEnd(start)
                     }}
                     onChange={e => {
-                      console.log(e)
                       if (
                         new Date(today).getTime() >
                         new Date(e.target.value).getTime()
                       )
                         return
-                      console.log(`today.getMinutes()`, today, e.target.value)
                       setStart(e.target.value)
                     }}
                     id="reminder-start"

@@ -218,6 +218,29 @@ svg {
   color: var(--color-red);
 }
 
+.reminder-start {
+  font-size: 2.2rem;
+  margin: 0;
+}
+
+.delete-icon {
+  position: absolute;
+  background: var(--color-background-shadow);
+  margin-top: -0.95em;
+  margin-left: -0.95em;
+  padding: 0.2em 0.1em 0.1em;
+  border-color: var(--color-red);
+  z-index: 20;
+}
+
+.delete-icon > svg {
+  stroke: var(--color-red);
+}
+
+.delete-icon:hover {
+  background: var(--color-background);
+}
+
 [data-reach-disclosure-button] {
   padding: 0.5rem 0.6rem;
   justify-self: center;
@@ -249,6 +272,7 @@ svg {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 100;
 }
 
 [data-reach-alert-dialog-description] {
@@ -279,6 +303,10 @@ svg {
   .slide-down[data-reach-disclosure-panel],
   .slide-down[data-reach-disclosure-panel] {
     animation: slide-down 0.3s ease;
+  }
+
+  .delete-icon {
+    transition: background 200ms ease-in-out;
   }
 }
 

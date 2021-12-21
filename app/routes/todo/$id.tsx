@@ -1,5 +1,5 @@
 import React from 'react'
-import {useLoaderData, json, useFetcher, Outlet} from 'remix'
+import {useLoaderData, json, useFetcher, Outlet, redirect} from 'remix'
 import {v4} from 'uuid'
 import {MixedCheckbox} from '@reach/checkbox'
 import {commitSession, getSession} from '~/sessions.server'
@@ -97,23 +97,90 @@ export const action: ActionFunction = async ({request, params}) => {
       toBeReturned.formData.notes = formData.get('notes')?.toString() ?? ''
       toBeReturned.formData.id = v4()
 
-      if (!toBeReturned.formData.name) {
-        toBeReturned.errors.name = 'Name Must be Provided!'
+      const isReminder = formData.get('isReminder')?.toString()
+
+      if (!isReminder) {
+        if (!toBeReturned.formData.name) {
+          toBeReturned.errors.name = 'Name Must be Provided!'
+          break
+        }
+
+        listData.tasks[listData.tasks.length] = {
+          name: formData.get('name')?.toString() ?? '',
+          notes: formData.get('notes')?.toString() ?? '',
+          id: toBeReturned.formData.id,
+          isDone: false,
+        }
         break
       }
+      toBeReturned.formData.taskId = formData.get('taskId')?.toString()
+      toBeReturned.formData.start = formData.get('start')?.toString()
+      toBeReturned.formData.end = formData.get('end')?.toString()
 
-      listData.tasks[listData.tasks.length] = {
-        name: formData.get('name')?.toString() ?? '',
-        notes: formData.get('notes')?.toString() ?? '',
-        id: toBeReturned.formData.id,
-        isDone: false,
+      if (!toBeReturned.formData.taskId) {
+        toBeReturned.errors.taskId = 'ListName is undefined'
+        break
       }
+      if (!toBeReturned.formData.end) {
+        toBeReturned.errors.end = 'To Date must be provided'
+        break
+      }
+      if (!toBeReturned.formData.start) {
+        toBeReturned.formData.start = new Date().toISOString()
+      }
+
+      listData.reminders.push({
+        taskId: toBeReturned.formData.taskId,
+        start: new Date(toBeReturned.formData.start).getTime(),
+        end: new Date(toBeReturned.formData.end).getTime(),
+        id: v4(),
+      })
+
       break
     }
 
-    default:
+    case 'delete': {
+      toBeReturned.formData.taskId = formData.get('taskId')?.toString()
+      toBeReturned.formData.reminderId = formData.get('reminderId')?.toString()
+
+      if (!toBeReturned.formData.taskId && !toBeReturned.formData.reminderId) {
+        toBeReturned.errors.taskId = 'An Id must provided.'
+        break
+      }
+
+      if (toBeReturned.formData.taskId) {
+        const tasksIndex = listData.tasks.findIndex(
+          tasks => tasks.id === toBeReturned.formData.taskId,
+        )
+        listData.tasks.splice(tasksIndex, 1)
+
+        function removeRelatedReminders(): void {
+          if (!listData) return
+          const remindersIndex = listData.reminders.findIndex(
+            reminders => reminders.taskId === toBeReturned.formData.taskId,
+          )
+          if (remindersIndex < 0) return
+          listData.reminders.splice(remindersIndex, 1)
+
+          return removeRelatedReminders()
+        }
+        removeRelatedReminders()
+        break
+      }
+      // if (!toBeReturned.formData.reminderId) break
+      const remindersIndex = listData.reminders.findIndex(
+        reminders => reminders.id === toBeReturned.formData.reminderId,
+      )
+      if (remindersIndex < 0) return
+      listData.reminders.splice(remindersIndex, 1)
+
+      break
+    }
+
+    default: {
       toBeReturned.errors.message = `Method[${request.method}] is not handled`
       break
+    }
   }
 
   if (Object.values(toBeReturned.errors).length > 0) {
@@ -122,7 +189,7 @@ export const action: ActionFunction = async ({request, params}) => {
     })
   }
 
-  session.set(listId, listData)
+  session.set(listId, {...listData})
 
   return json(toBeReturned, {
     headers: {
