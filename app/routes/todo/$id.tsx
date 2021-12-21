@@ -151,11 +151,18 @@ export const action: ActionFunction = async ({request, params}) => {
         tasks => tasks.id === toBeReturned.formData.taskId,
       )
       listData.tasks.splice(tasksIndex, 1)
-      const remindersIndex = listData.reminders.findIndex(
-        reminders => reminders.taskId === toBeReturned.formData.taskId,
-      )
-      listData.reminders.splice(remindersIndex, 1)
 
+      function removeRelatedReminders(): void {
+        if (!listData) return
+        const remindersIndex = listData.reminders.findIndex(
+          reminders => reminders.taskId === toBeReturned.formData.taskId,
+        )
+        if (remindersIndex < 0) return
+        listData.reminders.splice(remindersIndex, 1)
+
+        return removeRelatedReminders()
+      }
+      removeRelatedReminders()
       break
     }
 
