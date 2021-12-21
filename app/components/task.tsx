@@ -12,13 +12,13 @@ function TaskRoot({
   isDone,
   className = '',
   isOpen,
-  handleTransCan,
+  handleTrashCan,
 }: {
   children: React.ReactNode
   isDone: boolean
   isOpen: boolean
   className?: string
-  handleTransCan?: () => void
+  handleTrashCan?: () => void
 }) {
   // ! TODO: Handle is-done in css for a change
   // * Note To Self: cannot use self-made attributes but
@@ -27,8 +27,8 @@ function TaskRoot({
     <li
       className={`task-root__container ${className}`}
       data-state={isDone}
-      onMouseEnter={handleTransCan}
-      onMouseLeave={handleTransCan}
+      onMouseEnter={handleTrashCan}
+      onMouseLeave={handleTrashCan}
     >
       <Disclosure open={isOpen}>{children}</Disclosure>
     </li>
@@ -156,7 +156,7 @@ function Task({
       <TaskRoot
         isOpen={isOpen}
         isDone={isDone}
-        handleTransCan={() => setIsMouseIn(status => !status)}
+        handleTrashCan={() => setIsMouseIn(status => !status)}
       >
         {isMouseIn && (
           <Delete

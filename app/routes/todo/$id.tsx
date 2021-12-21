@@ -141,28 +141,39 @@ export const action: ActionFunction = async ({request, params}) => {
 
     case 'delete': {
       toBeReturned.formData.taskId = formData.get('taskId')?.toString()
+      toBeReturned.formData.reminderId = formData.get('reminderId')?.toString()
 
-      if (!toBeReturned.formData.taskId) {
-        toBeReturned.errors.taskId = "Task Id wasn't provided."
+      if (!toBeReturned.formData.taskId && !toBeReturned.formData.reminderId) {
+        toBeReturned.errors.taskId = 'An Id must provided.'
         break
       }
 
-      const tasksIndex = listData.tasks.findIndex(
-        tasks => tasks.id === toBeReturned.formData.taskId,
-      )
-      listData.tasks.splice(tasksIndex, 1)
-
-      function removeRelatedReminders(): void {
-        if (!listData) return
-        const remindersIndex = listData.reminders.findIndex(
-          reminders => reminders.taskId === toBeReturned.formData.taskId,
+      if (toBeReturned.formData.taskId) {
+        const tasksIndex = listData.tasks.findIndex(
+          tasks => tasks.id === toBeReturned.formData.taskId,
         )
-        if (remindersIndex < 0) return
-        listData.reminders.splice(remindersIndex, 1)
+        listData.tasks.splice(tasksIndex, 1)
 
-        return removeRelatedReminders()
+        function removeRelatedReminders(): void {
+          if (!listData) return
+          const remindersIndex = listData.reminders.findIndex(
+            reminders => reminders.taskId === toBeReturned.formData.taskId,
+          )
+          if (remindersIndex < 0) return
+          listData.reminders.splice(remindersIndex, 1)
+
+          return removeRelatedReminders()
+        }
+        removeRelatedReminders()
+        break
       }
-      removeRelatedReminders()
+      // if (!toBeReturned.formData.reminderId) break
+      const remindersIndex = listData.reminders.findIndex(
+        reminders => reminders.id === toBeReturned.formData.reminderId,
+      )
+      if (remindersIndex < 0) return
+      listData.reminders.splice(remindersIndex, 1)
+
       break
     }
 

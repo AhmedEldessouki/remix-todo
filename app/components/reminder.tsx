@@ -1,6 +1,7 @@
 import React from 'react'
-import {useMatches} from 'remix'
+import {useFetcher, useMatches} from 'remix'
 import {ActionReturnable, TodoIdRouteLoaderData} from '~/types'
+import Delete from './delete'
 
 type TimerType = {
   days: number
@@ -123,6 +124,13 @@ function ReminderDisplay({
   end: number
 }) {
   const [timer, setTimer] = React.useState(() => handleCountDown(end))
+  const [isMouseIn, setIsMouseIn] = React.useState(false)
+  const fetcher = useFetcher()
+
+  const handleTrashCan = () => setIsMouseIn(status => !status)
+  const handleDelete = () => {
+    fetcher.submit({reminderId: id}, {method: 'delete'})
+  }
 
   React.useEffect(() => {
     if (Date.now() > end) return
@@ -136,8 +144,13 @@ function ReminderDisplay({
 
   if (timer.status === 'passed') {
     return (
-      <div className="passed__container">
+      <div
+        className="passed__container"
+        onMouseEnter={handleTrashCan}
+        onMouseLeave={handleTrashCan}
+      >
         <div className="reminder__container">
+          {isMouseIn && <Delete handleClick={handleDelete} />}
           <ReminderSkin timer={timer} end={end} id={id} taskId={taskId} />
         </div>
         <div className="reminder__container passed">
@@ -151,7 +164,10 @@ function ReminderDisplay({
       className="reminder__container on-going"
       key={id + taskId}
       itemID={id + taskId}
+      onMouseEnter={handleTrashCan}
+      onMouseLeave={handleTrashCan}
     >
+      {isMouseIn && <Delete handleClick={handleDelete} />}
       <ReminderSkin
         timer={timer}
         end={end}

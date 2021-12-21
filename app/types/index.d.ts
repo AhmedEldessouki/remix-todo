@@ -21,6 +21,7 @@ type Inputs = {
   notes?: string
   name?: string
   taskId?: string
+  reminderId?: string
   id?: string
   start?: string
   end?: string

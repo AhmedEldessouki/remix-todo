@@ -230,6 +230,7 @@ svg {
   margin-left: -0.95em;
   padding: 0.2em 0.1em 0.1em;
   border-color: var(--color-red);
+  z-index: 20;
 }
 
 .delete-icon > svg {
