@@ -258,6 +258,23 @@ svg {
   border-end-start-radius: var(--rounded);
 }
 
+[data-reach-disclosure-panel] > form {
+  padding: 0.4em 1em;
+  display: grid;
+  justify-items: end;
+  align-items: end;
+}
+
+[data-reach-disclosure-panel] > form > label {
+  width: 100%;
+}
+
+[data-reach-disclosure-panel] > form > button {
+  position: absolute;
+  margin-bottom: 0.68em;
+  margin-right: 0.5em;
+}
+
 [data-reach-disclosure-panel][data-state='open'] {
   background: var(--color-background-shadow);
   opacity: 1;
