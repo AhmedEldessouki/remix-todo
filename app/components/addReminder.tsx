@@ -57,13 +57,6 @@ export default function AddReminder({taskId}: {taskId: string}) {
     }
   }, [fetcher.type])
 
-  // if (taskRemindersCount > 1) {
-  // ! TODO: Maybe a message tell the user's
-  // ! how many reminders he/she has related
-  // ! to that Task. Ask if they want to Edit
-  // ! Or Add a new one (This Doesn't make sense Really)
-  // }
-
   return (
     <>
       <button
