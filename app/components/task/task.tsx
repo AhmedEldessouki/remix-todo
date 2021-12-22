@@ -132,7 +132,6 @@ function CreateTask() {
           <button type="submit">Submit</button>
         </TaskNotes>
       </fetcher.Form>
-      {/* // ! Handle AddReminder error here */}
     </TaskRoot>
   )
 }
