@@ -36,7 +36,11 @@ export default function AddReminder({taskId}: {taskId: string}) {
   const {current: today} = React.useRef(getTodayDate())
   const [isOpen, setIsOpen] = React.useState(false)
   const [isReminders, setIsReminders] = React.useState(false)
-  const [reminders, setReminders] = React.useState<TaskReminder[]>([])
+  const [reminders, setReminders] = React.useState<TaskReminder[]>(
+    (routeData.data as TodoIdRouteLoaderData).listData.reminders.filter(
+      reminder => reminder.taskId === taskId,
+    ),
+  )
   const [start, setStart] = React.useState(today)
   const [end, setEnd] = React.useState(start)
 
@@ -80,6 +84,7 @@ export default function AddReminder({taskId}: {taskId: string}) {
           setIsOpen(s => !s)
         }}
       >
+        <span style={{fontSize: `0.8rem`}}>{reminders.length}</span>
         <Bell />
         <VisuallyHidden>add reminder</VisuallyHidden>
       </button>
