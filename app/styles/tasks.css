@@ -185,6 +185,7 @@ svg {
 .reminder-main__sub-container:not(:nth-last-child) > p {
   display: flex;
 }
+
 .numbers {
   font-size: 2rem;
   font-style: normal;
