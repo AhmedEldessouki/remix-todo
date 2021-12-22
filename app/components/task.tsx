@@ -20,9 +20,6 @@ function TaskRoot({
   className?: string
   handleTrashCan?: () => void
 }) {
-  // ! TODO: Handle is-done in css for a change
-  // * Note To Self: cannot use self-made attributes but
-  // * but you can use data-state to control the styling
   return (
     <li
       className={`task-root__container ${className}`}
