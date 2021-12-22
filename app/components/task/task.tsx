@@ -189,7 +189,9 @@ function Task({
               <input type="hidden" value={taskId} name="taskId" />
               {/* // ! Handle AddReminder error here */}
               {fetcher.data?.errors && (
-                <p className="warning">{JSON.stringify(fetcher, null, 2)}</p>
+                <p className="warning">
+                  {JSON.stringify(fetcher.data.errors, null, 2)}
+                </p>
               )}
 
               <button type="submit" className="button-clean">
