@@ -3,9 +3,9 @@ import {useLoaderData, json, useFetcher, Outlet, redirect} from 'remix'
 import {v4} from 'uuid'
 import {MixedCheckbox} from '@reach/checkbox'
 import {commitSession, getSession} from '~/sessions.server'
-import Task, {CreateTask} from '~/components/task'
-import {SkinAside, SkinCore, SkinMain} from '~/components/skin'
-import ReminderDisplay from '~/components/reminder'
+import Task, {CreateTask} from '~/components/task/task'
+import {SkinAside, SkinCore, SkinMain} from '~/components/task/skin'
+import ReminderDisplay from '~/components/reminder/reminder'
 import type {
   LinksFunction,
   ActionFunction,

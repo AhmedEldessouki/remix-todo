@@ -6,9 +6,15 @@ import {
 } from '@reach/alert-dialog'
 import React from 'react'
 import {useFetcher, useMatches} from 'remix'
-import Bell from './bell'
 import VisuallyHidden from '@reach/visually-hidden'
-import {ActionReturnable} from '~/types'
+import Bell from './bell'
+import RelatedReminders from './relatedReminders'
+import ReminderDisplay from './reminder'
+import type {
+  ActionReturnable,
+  TaskReminder,
+  TodoIdRouteLoaderData,
+} from '~/types'
 
 const getTodayDate = () => {
   const date = new Date()
@@ -30,9 +36,15 @@ const getTodayDate = () => {
 export default function AddReminder({taskId}: {taskId: string}) {
   const cancelRef = React.useRef(null)
   const fetcher = useFetcher<ActionReturnable>()
-  const match = useMatches()
+  const [, , routeData] = useMatches()
   const {current: today} = React.useRef(getTodayDate())
   const [isOpen, setIsOpen] = React.useState(false)
+  const [isReminders, setIsReminders] = React.useState(false)
+  const [reminders, setReminders] = React.useState<TaskReminder[]>(
+    (routeData.data as TodoIdRouteLoaderData).listData.reminders.filter(
+      reminder => reminder.taskId === taskId,
+    ),
+  )
   const [start, setStart] = React.useState(today)
   const [end, setEnd] = React.useState(start)
 
@@ -48,27 +60,50 @@ export default function AddReminder({taskId}: {taskId: string}) {
       setIsOpen(false)
     }
   }, [fetcher.type])
-  // const taskRemindersCount = (
-  //   listData.data as TodoIdRouteLoaderData
-  // ).listData.reminders.filter(reminder => reminder.taskId === taskId).length
-
-  // if (taskRemindersCount > 1) {
-  // ! TODO: Maybe a message tell the user's
-  // ! how many reminders he/she has related
-  // ! to that Task. Ask if they want to Edit
-  // ! Or Add a new one (This Doesn't make sense Really)
-  // }
 
   return (
     <>
       <button
         type="button"
         className="btn-link-alike"
-        onClick={() => setIsOpen(s => !s)}
+        onClick={() => {
+          const filteredReminders = (
+            routeData.data as TodoIdRouteLoaderData
+          ).listData.reminders.filter(reminder => reminder.taskId === taskId)
+          console.log(filteredReminders)
+          if (!!filteredReminders.length) {
+            setIsReminders(state => !state)
+            setReminders([...filteredReminders])
+
+            return
+          }
+
+          setIsOpen(s => !s)
+        }}
       >
+        <span style={{fontSize: `0.8rem`}}>{reminders.length}</span>
         <Bell />
         <VisuallyHidden>add reminder</VisuallyHidden>
       </button>
+      {isReminders && (
+        <RelatedReminders
+          handleExit={() => setIsReminders(state => !state)}
+          handleNext={() => {
+            setIsReminders(state => !state)
+            setIsOpen(state => !state)
+          }}
+        >
+          {reminders.map(({id, taskId, start, end}) => (
+            <ReminderDisplay
+              key={`found-reminders-${id}`}
+              id={id}
+              taskId={taskId}
+              start={start}
+              end={end}
+            />
+          ))}
+        </RelatedReminders>
+      )}
       {isOpen && (
         <AlertDialogOverlay
           leastDestructiveRef={cancelRef}

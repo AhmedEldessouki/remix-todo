@@ -3,9 +3,9 @@ import {Disclosure, DisclosureButton, DisclosurePanel} from '@reach/disclosure'
 import VisuallyHidden from '@reach/visually-hidden'
 import {MixedCheckbox} from '@reach/checkbox'
 import {useFetcher} from 'remix'
-import Input from './input'
-import AddReminder from './addReminder'
-import Delete from './delete'
+import Input from '../input'
+import AddReminder from '../reminder/addReminder'
+import Delete from '../delete'
 
 function TaskRoot({
   children,
@@ -20,9 +20,6 @@ function TaskRoot({
   className?: string
   handleTrashCan?: () => void
 }) {
-  // ! TODO: Handle is-done in css for a change
-  // * Note To Self: cannot use self-made attributes but
-  // * but you can use data-state to control the styling
   return (
     <li
       className={`task-root__container ${className}`}
@@ -114,6 +111,7 @@ function CreateTask() {
             name="name"
             id="create-task-name"
             placeholder="Enter new task name"
+            required
           />
         </TaskHeader>
         <TaskNotes className="panel-with-form">
@@ -177,7 +175,7 @@ function Task({
           {notes ? (
             <blockquote>{notes}</blockquote>
           ) : (
-            <fetcher.Form method="put" reloadDocument>
+            <fetcher.Form method="put">
               <label htmlFor="add-task-notes" aria-label="notes">
                 <textarea
                   name="notes"
@@ -185,6 +183,7 @@ function Task({
                   rows={20}
                   cols={20}
                   placeholder="Enter your notes here"
+                  required
                 />
               </label>
               <input type="hidden" value={taskId} name="taskId" />
