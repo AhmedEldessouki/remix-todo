@@ -4,7 +4,7 @@ import VisuallyHidden from '@reach/visually-hidden'
 import {MixedCheckbox} from '@reach/checkbox'
 import {useFetcher} from 'remix'
 import Input from './input'
-import AddReminder from './addReminder'
+import AddReminder from './reminder/addReminder'
 import Delete from './delete'
 
 function TaskRoot({

@@ -5,7 +5,7 @@ import {MixedCheckbox} from '@reach/checkbox'
 import {commitSession, getSession} from '~/sessions.server'
 import Task, {CreateTask} from '~/components/task'
 import {SkinAside, SkinCore, SkinMain} from '~/components/skin'
-import ReminderDisplay from '~/components/reminder'
+import ReminderDisplay from '~/components/reminder/reminder'
 import type {
   LinksFunction,
   ActionFunction,
