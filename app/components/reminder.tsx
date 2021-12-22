@@ -1,7 +1,7 @@
 import React from 'react'
 import {useFetcher, useMatches} from 'remix'
-import {TodoIdRouteLoaderData} from '~/types'
 import Delete from './delete'
+import type {TodoIdRouteLoaderData} from '~/types'
 
 type TimerType = {
   days: number
