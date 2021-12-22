@@ -6,11 +6,15 @@ import {
 } from '@reach/alert-dialog'
 import React from 'react'
 import {useFetcher, useMatches} from 'remix'
-import Bell from './bell'
 import VisuallyHidden from '@reach/visually-hidden'
-import {ActionReturnable, TaskReminder, TodoIdRouteLoaderData} from '~/types'
+import Bell from './bell'
 import RelatedReminders from './relatedReminders'
 import ReminderDisplay from './reminder'
+import type {
+  ActionReturnable,
+  TaskReminder,
+  TodoIdRouteLoaderData,
+} from '~/types'
 
 const getTodayDate = () => {
   const date = new Date()
