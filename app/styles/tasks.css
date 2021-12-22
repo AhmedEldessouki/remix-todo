@@ -1,3 +1,7 @@
+:root {
+  --wd: 330px;
+}
+
 blockquote {
   padding: 1.5em 0.7em;
 }
@@ -116,6 +120,7 @@ svg {
   margin: 13px;
   padding: 0.7em 0.5em;
   height: 8.3em;
+  width: var(--wd);
 }
 
 .reminder-text__container {
@@ -187,13 +192,13 @@ svg {
 }
 
 .passed__container {
-  height: 8.3em;
+  display: grid;
+  justify-items: center;
 }
 
 .passed {
   background: #212224d4;
-  top: -146px;
-  position: relative;
+  position: absolute;
   z-index: 10;
   text-align: center;
   display: flex;
@@ -201,6 +206,7 @@ svg {
   overflow: hidden;
   height: 8.31em;
   box-shadow: 0.02em 0.02em 0.65em -1px #3972844f;
+  width: var(--wd);
 }
 
 .passed > h1 {
@@ -264,6 +270,7 @@ svg {
 }
 
 [data-reach-alert-dialog-overlay] {
+  --wd: 238px;
   background: #343748af none repeat scroll 0% 0%;
   position: fixed;
   width: 100%;
@@ -278,7 +285,10 @@ svg {
 [data-reach-alert-dialog-description] {
   display: flex;
   flex-direction: column;
-  padding: 15px 7px;
+  padding: 1.5em 1em;
+  align-items: center;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 [data-reach-dialog-content] {
@@ -325,5 +335,11 @@ svg {
 @media (prefers-color-scheme: light) {
   .task-root__container:where([data-state='true']) {
     color: gray;
+  }
+}
+
+@media print, screen and (max-width: 400px) {
+  :root {
+    --wd: 290px;
   }
 }
