@@ -1,6 +1,6 @@
 import React from 'react'
 import {useFetcher, useMatches} from 'remix'
-import {ActionReturnable, TodoIdRouteLoaderData} from '~/types'
+import {TodoIdRouteLoaderData} from '~/types'
 import Delete from './delete'
 
 type TimerType = {
