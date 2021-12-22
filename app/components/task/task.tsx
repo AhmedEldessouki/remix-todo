@@ -111,6 +111,7 @@ function CreateTask() {
             name="name"
             id="create-task-name"
             placeholder="Enter new task name"
+            required
           />
         </TaskHeader>
         <TaskNotes className="panel-with-form">
@@ -174,7 +175,7 @@ function Task({
           {notes ? (
             <blockquote>{notes}</blockquote>
           ) : (
-            <fetcher.Form method="put" reloadDocument>
+            <fetcher.Form method="put">
               <label htmlFor="add-task-notes" aria-label="notes">
                 <textarea
                   name="notes"
@@ -182,6 +183,7 @@ function Task({
                   rows={20}
                   cols={20}
                   placeholder="Enter your notes here"
+                  required
                 />
               </label>
               <input type="hidden" value={taskId} name="taskId" />

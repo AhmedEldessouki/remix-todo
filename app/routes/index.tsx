@@ -1,5 +1,5 @@
 import type {MetaFunction} from 'remix'
-import {SkinAside, SkinCore, SkinMain} from '~/components/skin'
+import {SkinAside, SkinCore, SkinMain} from '~/components/task/skin'
 
 export let meta: MetaFunction = () => {
   return {
