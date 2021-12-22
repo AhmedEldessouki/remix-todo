@@ -1,5 +1,5 @@
 import React from 'react'
-import {useLoaderData, json, useFetcher, Outlet, redirect} from 'remix'
+import {useLoaderData, json, useFetcher, Outlet, redirect, Link} from 'remix'
 import {v4} from 'uuid'
 import {MixedCheckbox} from '@reach/checkbox'
 import {commitSession, getSession} from '~/sessions.server'
@@ -205,7 +205,12 @@ export const loader: LoaderFunction = async ({request, params}) => {
 
   if (!listId) {
     return json(
-      {message: 'List Name Is inValid'},
+      {
+        message: 'List Name Is inValid!',
+        listId: '',
+        listData: {tasks: [], reminders: []},
+        isAllChecked: false,
+      },
       {
         status: 404,
       },
@@ -216,7 +221,12 @@ export const loader: LoaderFunction = async ({request, params}) => {
 
   if (!listData) {
     return json(
-      {message: 'List Not Found'},
+      {
+        message: 'List Not Found!',
+        listId: '',
+        listData: {tasks: [], reminders: []},
+        isAllChecked: false,
+      },
       {
         status: 404,
       },
@@ -234,7 +244,7 @@ export const loader: LoaderFunction = async ({request, params}) => {
   }
 
   return json({
-    message: '',
+    message: undefined,
     listId,
     listData,
     isAllChecked,
@@ -252,7 +262,29 @@ export default function Todo() {
           // ! to display the nav data here 
           // ! instead of refetching them  
       */}
-      {message && <span>{message}</span>}
+      {message && (
+        <div
+          style={{
+            border: '5px solid var(--color-red)',
+            borderRadius: 'var(--rounded)',
+            padding: '0.6em 1.3em',
+            textAlign: 'center',
+          }}
+        >
+          <p
+            className="warning"
+            style={{
+              textAlign: 'center',
+              fontSize: '2rem',
+            }}
+          >
+            {message}
+          </p>
+          <pre style={{borderLeftColor: `var(--color-red)`}}>
+            Create a new list click <Link to="/todo/new">here</Link>.
+          </pre>
+        </div>
+      )}
       <SkinCore>
         <SkinMain>
           <h2>ToDO</h2>
@@ -262,6 +294,7 @@ export default function Todo() {
                 value="tasks"
                 name="tasks"
                 checked={isAllChecked}
+                disabled={!!message}
                 onChange={() => {
                   if (isAllChecked !== true) {
                     fetcher.submit(

@@ -124,13 +124,15 @@ function CreateTask() {
               placeholder="Enter your notes here"
             />
           </label>
+          {fetcher.data?.errors && (
+            <p className="warning">
+              {JSON.stringify(fetcher.data.errors, null, 2)}
+            </p>
+          )}
           <button type="submit">Submit</button>
         </TaskNotes>
       </fetcher.Form>
       {/* // ! Handle AddReminder error here */}
-      {fetcher.data?.errors && (
-        <p className="warning">{JSON.stringify(fetcher, null, 2)}</p>
-      )}
     </TaskRoot>
   )
 }
@@ -150,58 +152,56 @@ function Task({
   const [isMouseIn, setIsMouseIn] = React.useState(false)
   const fetcher = useFetcher()
   return (
-    <>
-      <TaskRoot
-        isOpen={isOpen}
+    <TaskRoot
+      isOpen={isOpen}
+      isDone={isDone}
+      handleTrashCan={() => setIsMouseIn(status => !status)}
+    >
+      {isMouseIn && (
+        <Delete
+          handleClick={() => {
+            fetcher.submit({taskId}, {method: 'delete'})
+          }}
+        />
+      )}
+      <TaskHeader
         isDone={isDone}
-        handleTrashCan={() => setIsMouseIn(status => !status)}
+        isOpen={isOpen}
+        id={taskId}
+        handleDisclosure={() => setIsOpen(state => !state)}
       >
-        {isMouseIn && (
-          <Delete
-            handleClick={() => {
-              fetcher.submit({taskId}, {method: 'delete'})
-            }}
-          />
-        )}
-        <TaskHeader
-          isDone={isDone}
-          isOpen={isOpen}
-          id={taskId}
-          handleDisclosure={() => setIsOpen(state => !state)}
-        >
-          <h3>{name}</h3>
-        </TaskHeader>
-        <TaskNotes>
-          {notes ? (
-            <blockquote>{notes}</blockquote>
-          ) : (
-            <fetcher.Form method="put">
-              <label htmlFor="add-task-notes" aria-label="notes">
-                <textarea
-                  name="notes"
-                  id="add-task-notes"
-                  rows={20}
-                  cols={20}
-                  placeholder="Enter your notes here"
-                  required
-                />
-              </label>
-              <input type="hidden" value={taskId} name="taskId" />
-              {/* // ! Handle AddReminder error here */}
-              {fetcher.data?.errors && (
-                <p className="warning">
-                  {JSON.stringify(fetcher.data.errors, null, 2)}
-                </p>
-              )}
+        <h3>{name}</h3>
+      </TaskHeader>
+      <TaskNotes>
+        {notes ? (
+          <blockquote>{notes}</blockquote>
+        ) : (
+          <fetcher.Form method="put">
+            <label htmlFor="add-task-notes" aria-label="notes">
+              <textarea
+                name="notes"
+                id="add-task-notes"
+                rows={20}
+                cols={20}
+                placeholder="Enter your notes here"
+                required
+              />
+            </label>
+            <input type="hidden" value={taskId} name="taskId" />
+            {/* // ! Handle AddReminder error here */}
+            {fetcher.data?.errors && (
+              <p className="warning">
+                {JSON.stringify(fetcher.data.errors, null, 2)}
+              </p>
+            )}
 
-              <button type="submit" className="button-clean">
-                <SendIcon />
-              </button>
-            </fetcher.Form>
-          )}
-        </TaskNotes>
-      </TaskRoot>
-    </>
+            <button type="submit" className="button-clean">
+              <SendIcon />
+            </button>
+          </fetcher.Form>
+        )}
+      </TaskNotes>
+    </TaskRoot>
   )
 }
 
