@@ -10,14 +10,12 @@ import {
 } from 'remix'
 import type {LinksFunction} from 'remix'
 
-import dialogStyles from '@reach/dialog/styles.css'
 import checkboxStyles from '@reach/checkbox/styles.css'
 import globalStylesUrl from '~/styles/global.css'
 
 export let links: LinksFunction = () => {
   return [
     {rel: 'stylesheet', href: globalStylesUrl},
-    {rel: 'stylesheet', href: dialogStyles},
     {rel: 'stylesheet', href: checkboxStyles},
   ]
 }
