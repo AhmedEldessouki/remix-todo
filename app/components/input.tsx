@@ -3,7 +3,7 @@ import React from 'react'
 function Input({
   className,
   label,
-  id,
+  id: inputId,
   ...inputProps
 }: {
   label: string
@@ -11,9 +11,9 @@ function Input({
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>
 } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
-    <label htmlFor={id} className={className}>
+    <label htmlFor={inputId} className={className}>
       <span>{label}</span>
-      <input id={id} {...inputProps} />
+      <input id={inputId} {...inputProps} />
     </label>
   )
 }

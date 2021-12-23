@@ -1,3 +1,7 @@
+:root {
+  --wd: 330px;
+}
+
 blockquote {
   padding: 1.5em 0.7em;
 }
@@ -58,7 +62,9 @@ svg {
 }
 
 .task-form {
+  box-shadow: 0.0002em 0.01em 0.65em -1px #834aff;
   background-image: var(--color-background-gradient) !important;
+  padding-top: 0.28em;
 }
 
 .task-header__container {
@@ -114,19 +120,24 @@ svg {
   margin: 13px;
   padding: 0.7em 0.5em;
   height: 8.3em;
+  width: var(--wd);
 }
 
-.reminder__container > div > span {
+.reminder-text__container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.reminder-text__container > span {
   margin: 0 1em;
   color: var(--color-links);
   font-style: italic;
   letter-spacing: 0.04em;
   font-size: 0.9rem;
-}
-
-.reminder-header__container {
-  display: flex;
-  justify-content: space-between;
+  max-width: 94px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .reminder-main__container {
@@ -138,16 +149,41 @@ svg {
 }
 
 .reminder-main__sub-container {
+  display: grid;
+  flex-direction: column;
+  justify-items: center;
+  align-items: center;
+  font-size: 0.7rem;
+  grid-template-columns: 40px 10px;
+  grid-template-rows: 18px 1fr;
+}
+
+.reminder-main__sub-container:nth-last-child(1) {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 47px;
+  width: 39px;
   font-size: 0.7rem;
 }
 
 .reminder-main__sub-container > p {
   margin: 0;
+}
+
+.reminder-main__sub-container:not(:nth-last-child(1)) > p:nth-child(2) {
+  grid-row: span 2;
+  font-size: 2rem;
+  font-style: normal;
+  padding-top: 12px;
+  align-self: end;
+  justify-self: center;
+  overflow: hidden;
+  line-height: 37px;
+}
+
+.reminder-main__sub-container:not(:nth-last-child) > p {
+  display: flex;
 }
 
 .numbers {
@@ -156,25 +192,22 @@ svg {
   line-height: 1;
 }
 
-.reminder-footer__container {
-  display: flex;
-  justify-content: end;
-}
-
 .passed__container {
-  height: 8.3em;
+  display: grid;
+  justify-items: center;
 }
 
 .passed {
   background: #212224d4;
-  top: -146px;
-  position: relative;
+  position: absolute;
   z-index: 10;
   text-align: center;
   display: flex;
   justify-content: center;
   overflow: hidden;
   height: 8.31em;
+  box-shadow: 0.02em 0.02em 0.65em -1px #3972844f;
+  width: var(--wd);
 }
 
 .passed > h1 {
@@ -183,9 +216,36 @@ svg {
   font-style: italic;
 }
 
+.on-going {
+  box-shadow: 0.02em 0.02em 0.65em -1px hsl(212.5, 35.9%, 45.3%);
+}
+
 .warning {
   margin: none;
   color: var(--color-red);
+}
+
+.reminder-start {
+  font-size: 2.2rem;
+  margin: 0;
+}
+
+.delete-icon {
+  position: absolute;
+  background: var(--color-background-shadow);
+  margin-top: -0.95em;
+  margin-left: -0.95em;
+  padding: 0.2em 0.1em 0.1em;
+  border-color: var(--color-red);
+  z-index: 20;
+}
+
+.delete-icon > svg {
+  stroke: var(--color-red);
+}
+
+.delete-icon:hover {
+  background: var(--color-background);
 }
 
 [data-reach-disclosure-button] {
@@ -197,6 +257,23 @@ svg {
 [data-reach-disclosure-panel] {
   border-end-end-radius: var(--rounded);
   border-end-start-radius: var(--rounded);
+}
+
+[data-reach-disclosure-panel] > form {
+  padding: 0.4em 1em;
+  display: grid;
+  justify-items: end;
+  align-items: end;
+}
+
+[data-reach-disclosure-panel] > form > label {
+  width: 100%;
+}
+
+[data-reach-disclosure-panel] > form > button {
+  position: absolute;
+  margin-bottom: 0.68em;
+  margin-right: 0.5em;
 }
 
 [data-reach-disclosure-panel][data-state='open'] {
@@ -211,6 +288,7 @@ svg {
 }
 
 [data-reach-alert-dialog-overlay] {
+  --wd: 238px;
   background: #343748af none repeat scroll 0% 0%;
   position: fixed;
   width: 100%;
@@ -219,12 +297,16 @@ svg {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 100;
 }
 
 [data-reach-alert-dialog-description] {
   display: flex;
   flex-direction: column;
-  padding: 15px 7px;
+  padding: 1.5em 1em;
+  align-items: center;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 [data-reach-dialog-content] {
@@ -250,6 +332,10 @@ svg {
   .slide-down[data-reach-disclosure-panel] {
     animation: slide-down 0.3s ease;
   }
+
+  .delete-icon {
+    transition: background 200ms ease-in-out;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -257,13 +343,21 @@ svg {
     background: var(--color-background-secondary);
   }
 }
+
 @media (prefers-color-scheme: no-preference) {
   .task-root__container:where([data-state='true']) {
     color: gray;
   }
 }
+
 @media (prefers-color-scheme: light) {
   .task-root__container:where([data-state='true']) {
     color: gray;
+  }
+}
+
+@media print, screen and (max-width: 400px) {
+  :root {
+    --wd: 290px;
   }
 }

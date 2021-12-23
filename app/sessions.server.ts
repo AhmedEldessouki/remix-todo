@@ -7,6 +7,7 @@ const {commitSession, destroySession, getSession} = createCookieSessionStorage({
     httpOnly: true,
     secure: true,
     expires: new Date(`2100-01-01`),
+    secrets: ['SeCrEt'],
   },
 })
 

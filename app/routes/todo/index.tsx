@@ -1,7 +1,6 @@
 import {redirect, json, useLoaderData} from 'remix'
 import {getSession} from '~/sessions.server'
 import type {LoaderFunction, MetaFunction} from 'remix'
-import type {Lists} from '~/types'
 
 export const meta: MetaFunction = () => {
   return {

@@ -1,15 +1,18 @@
-import {Outlet, json, NavLink, useLoaderData} from 'remix'
+import {Outlet, NavLink, useLoaderData} from 'remix'
 import type {LoaderFunction} from 'remix'
 import React from 'react'
 import {getSession} from '~/sessions.server'
 import type {Lists} from '~/types'
+import ActiveLink from '~/components/activeLink'
 
 export const loader: LoaderFunction = async ({request}) => {
   const session = await getSession(request.headers.get('Cookie'))
 
-  const lists = session.get('lists')
+  const lists: Array<string> | undefined = session.get('lists')
 
-  return lists ?? []
+  if (!lists) return []
+
+  return lists
 }
 
 export default function Todo() {
@@ -23,8 +26,8 @@ export default function Todo() {
             <NavLink to="new">Create New List</NavLink>
           </li>
           {lists.map(({name, id}) => (
-            <li key={id}>
-              <NavLink to={id}>{name}</NavLink>
+            <li key={`link-${id}`}>
+              <ActiveLink to={id}>{name}</ActiveLink>
             </li>
           ))}
         </ul>

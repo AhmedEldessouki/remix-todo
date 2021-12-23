@@ -10,14 +10,12 @@ import {
 } from 'remix'
 import type {LinksFunction} from 'remix'
 
-import dialogStyles from '@reach/dialog/styles.css'
 import checkboxStyles from '@reach/checkbox/styles.css'
 import globalStylesUrl from '~/styles/global.css'
 
 export let links: LinksFunction = () => {
   return [
     {rel: 'stylesheet', href: globalStylesUrl},
-    {rel: 'stylesheet', href: dialogStyles},
     {rel: 'stylesheet', href: checkboxStyles},
   ]
 }
@@ -135,16 +133,6 @@ function Layout({children}: {children: React.ReactNode}) {
           <Link to="/todo">
             <h1>TODO</h1>
           </Link>
-          <div>
-            <button
-              type="button"
-              onClick={() => {
-                // ! TODO: Add a new ListName to Cookie
-              }}
-            >
-              Create List
-            </button>
-          </div>
         </div>
       </header>
       <div className="remix-app__main">
