@@ -17,14 +17,14 @@ const displayLeft = (timer: TimerType): string => {
   }
 
   if (timer.hours > 0) {
-    return `${timer.hours} days left`
+    return `${timer.hours} hours left`
   }
 
   if (timer.minutes > 0) {
-    return `${timer.minutes} days left`
+    return `${timer.minutes} mins left`
   }
 
-  return `${timer.seconds} days left`
+  return `${timer.seconds} secs left`
 }
 
 const handleCountDown = (
@@ -40,10 +40,11 @@ const handleCountDown = (
   }
   if (left.status === 'passed') return left
 
-  left.days = new Date(today - reminder).getDay()
-  left.hours = new Date(reminder - today).getHours()
-  left.minutes = new Date(reminder - today).getMinutes()
-  left.seconds = new Date(reminder - today).getSeconds()
+  left.days = new Date(reminder).getDay() - new Date(today).getDay()
+  left.hours = new Date(reminder).getHours() - new Date(today).getHours()
+  left.minutes = new Date(reminder).getMinutes() - new Date(today).getMinutes()
+  left.seconds =
+    60 + new Date(reminder).getSeconds() - new Date(today).getSeconds()
   return left
 }
 
@@ -136,7 +137,7 @@ function ReminderDisplay({
     if (Date.now() > end) return
     if (start > Date.now()) return
     setInterval(() => {
-      setTimer(handleCountDown(end))
+      setTimer(handleCountDown(end, Date.now()))
     }, 100)
 
     return () => clearInterval()

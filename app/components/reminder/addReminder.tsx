@@ -74,7 +74,6 @@ export default function AddReminder({taskId}: {taskId: string}) {
           if (!!filteredReminders.length) {
             setIsReminders(state => !state)
             setReminders([...filteredReminders])
-
             return
           }
 
