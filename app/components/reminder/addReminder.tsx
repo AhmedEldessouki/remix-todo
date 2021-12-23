@@ -81,7 +81,13 @@ export default function AddReminder({taskId}: {taskId: string}) {
           setIsOpen(s => !s)
         }}
       >
-        <span style={{fontSize: `0.8rem`}}>{reminders.length}</span>
+        <span style={{fontSize: `0.8rem`}}>
+          {
+            (routeData.data as TodoIdRouteLoaderData).listData.reminders.filter(
+              reminder => reminder.taskId === taskId,
+            ).length
+          }
+        </span>
         <Bell />
         <VisuallyHidden>add reminder</VisuallyHidden>
       </button>
