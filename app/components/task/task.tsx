@@ -68,7 +68,7 @@ function TaskHeader({
         </label>
         <DisclosureButton onClick={handleDisclosure}>
           <span aria-hidden>{isOpen ? '🔽' : '🔼'}</span>
-          <VisuallyHidden>notes</VisuallyHidden>
+          <VisuallyHidden>view notes</VisuallyHidden>
         </DisclosureButton>
         {children}
         <AddReminder taskId={id} />

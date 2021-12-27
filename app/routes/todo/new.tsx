@@ -85,7 +85,13 @@ export default function New() {
     <section>
       <h2>Create List</h2>
       <Form method="post" reloadDocument>
-        <Input label="Name" name="name" id="create-list-name" type="text" />
+        <Input
+          label="List Name"
+          name="name"
+          placeholder="Enter list name"
+          id="create-list-name"
+          type="text"
+        />
         <pre>
           Press <u>Enter</u> to submit.
         </pre>
