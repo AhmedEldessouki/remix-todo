@@ -1,5 +1,11 @@
 {
-  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "remix.env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "cypress/**/*.spec.js",
+    "cypress/**/*.js"
+  ],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2019"],
     "esModuleInterop": true,
@@ -14,6 +20,6 @@
 
     // Remix takes care of building everything in `remix build`.
     "noEmit": true,
-    "types": ["cypress", "@testing-library/cypress"]
+    "types": ["node", "cypress", "@testing-library/cypress"]
   }
 }
