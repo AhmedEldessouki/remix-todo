@@ -70,7 +70,7 @@ export default function AddReminder({taskId}: {taskId: string}) {
           const filteredReminders = (
             routeData.data as TodoIdRouteLoaderData
           ).listData.reminders.filter(reminder => reminder.taskId === taskId)
-          console.log(filteredReminders)
+
           if (!!filteredReminders.length) {
             setIsReminders(state => !state)
             setReminders([...filteredReminders])
